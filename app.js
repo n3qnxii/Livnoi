@@ -1,147 +1,145 @@
-const state = JSON.parse(localStorage.getItem('livnoiState') || 'null') || {
-  xp:120, streak:3, hearts:3, combo:1, correct:7, total:9, words:18, focusMinutes:0, levelProgress:62
-};
-const save = ()=>localStorage.setItem('livnoiState', JSON.stringify(state));
+const $ = (s, root=document) => root.querySelector(s);
+const $$ = (s, root=document) => [...root.querySelectorAll(s)];
+const STORAGE='livnoi_v2_state';
+const defaultState={level:'A2',language:'mixed',speed:'normal',xp:0,streak:1,total:0,correct:0,bestCombo:0,bestScores:{vocab:0,grammar:0},music:true,sfx:true,powerSound:true,history:[]};
+let state={...defaultState,...JSON.parse(localStorage.getItem(STORAGE)||'{}')}; state.bestScores={...defaultState.bestScores,...(state.bestScores||{})};
+const save=()=>{localStorage.setItem(STORAGE,JSON.stringify(state));renderDashboard();};
 
-const vocabQuestions = [
-  {level:'A1', word:'arrive', prompt:'What does “arrive” mean?', options:['to reach a place','to forget something','to become smaller','to speak quietly'], answer:0, note:'Arrive = to reach a place. Example: We arrive at school at 8.'},
-  {level:'A1', word:'advice', prompt:'What is “advice”?', options:['a suggestion about what someone should do','a type of ticket','a difficult journey','a loud sound'], answer:0, note:'Advice is an opinion or suggestion that may help someone decide what to do.'},
-  {level:'A2', word:'improve', prompt:'What does “improve” mean?', options:['to become or make something better','to hide something','to repeat exactly','to stop suddenly'], answer:0, note:'Improve = become better. Example: Practice can improve your English.'},
-  {level:'A2', word:'borrow', prompt:'If you “borrow” a book, what do you do?', options:['take it for a time and return it later','buy it forever','throw it away','write a new one'], answer:0, note:'Borrow means take and use something for a time, then return it.'},
-  {level:'B1', word:'recover', prompt:'What does “recover” usually mean?', options:['to become well or normal again','to arrive too early','to explain in detail','to choose at random'], answer:0, note:'Recover = return to a normal or healthy condition.'},
-  {level:'B1', word:'effort', prompt:'What is an “effort”?', options:['an attempt that uses energy','a place to sleep','a kind of payment','a strong smell'], answer:0, note:'Effort means physical or mental energy used to do something.'}
+const WORDS=[
+ {level:'A1',en:'apple',th:'แอปเปิล',clue:'A round fruit that can be red or green.'},{level:'A1',en:'happy',th:'มีความสุข',clue:'Feeling pleased or joyful.'},{level:'A1',en:'borrow',th:'ยืม',clue:'To take something and return it later.'},{level:'A1',en:'quiet',th:'เงียบ',clue:'Making little or no noise.'},{level:'A1',en:'early',th:'แต่เช้า / ก่อนเวลา',clue:'Before the expected time.'},{level:'A2',en:'improve',th:'พัฒนาให้ดีขึ้น',clue:'To become better.'},{level:'A2',en:'decide',th:'ตัดสินใจ',clue:'To choose after thinking.'},{level:'A2',en:'invite',th:'เชิญ',clue:'To ask someone to come or join.'},{level:'A2',en:'careful',th:'ระมัดระวัง',clue:'Taking care to avoid mistakes.'},{level:'A2',en:'journey',th:'การเดินทาง',clue:'Travel from one place to another.'},{level:'A2',en:'return',th:'กลับ / คืน',clue:'To come or go back.'},{level:'A2',en:'usual',th:'ตามปกติ',clue:'Normal or typical.'},{level:'B1',en:'achieve',th:'บรรลุ',clue:'To succeed in reaching a goal.'},{level:'B1',en:'increase',th:'เพิ่มขึ้น',clue:'To become or make greater.'},{level:'B1',en:'avoid',th:'หลีกเลี่ยง',clue:'To stay away from something.'},{level:'B1',en:'benefit',th:'ประโยชน์',clue:'A helpful or useful result.'},{level:'B1',en:'confident',th:'มั่นใจ',clue:'Feeling sure about your ability.'},{level:'B1',en:'recommend',th:'แนะนำ',clue:'To suggest something as a good choice.'},{level:'B2',en:'significant',th:'สำคัญ / มีนัยสำคัญ',clue:'Important enough to be noticed.'},{level:'B2',en:'maintain',th:'รักษาไว้',clue:'To keep something at the same level or condition.'},{level:'B2',en:'approach',th:'แนวทาง / เข้าใกล้',clue:'A way of dealing with something.'},{level:'B2',en:'reliable',th:'เชื่อถือได้',clue:'Able to be trusted to work well.'},{level:'B2',en:'consequence',th:'ผลที่ตามมา',clue:'A result of an action or situation.'},{level:'B2',en:'perspective',th:'มุมมอง',clue:'A particular way of thinking about something.'},{level:'C1',en:'inevitable',th:'หลีกเลี่ยงไม่ได้',clue:'Certain to happen and impossible to avoid.'},{level:'C1',en:'substantial',th:'มาก / สำคัญ',clue:'Large in amount, value, or importance.'},{level:'C1',en:'ambiguous',th:'กำกวม',clue:'Having more than one possible meaning.'},{level:'C1',en:'coherent',th:'สอดคล้องและเข้าใจง่าย',clue:'Logical, consistent, and easy to understand.'}
 ];
-
-const grammarQuestions = [
-  {level:'A1', prompt:'Choose the correct sentence.', options:['She goes to class every day.','She go to class every day.','She going to class every day.','She gone to class every day.'], answer:0, note:'With he/she/it in the present simple, the verb usually takes -s.'},
-  {level:'A2', prompt:'Choose the best sentence.', options:['I have lived here for two years.','I live here since two years.','I am live here for two years.','I lived here since two years.'], answer:0, note:'Use present perfect with “for” for a period continuing until now.'},
-  {level:'B1', prompt:'Which sentence is correct?', options:['If it rains, we will stay home.','If it will rain, we stay home.','If it rains, we stayed home.','If it rain, we will staying home.'], answer:0, note:'First conditional: If + present simple, will + base verb.'}
+const GRAMMAR=[
+ {level:'A1',q:'She ___ to school every day.',options:['go','goes','going','gone'],a:'goes',hint:'Present simple with she/he/it.'},
+ {level:'A1',q:'Choose the correct sentence.',options:['I am student.','I am a student.','I a student am.','I student.'],a:'I am a student.',hint:'Use an article before a singular countable noun.'},
+ {level:'A2',q:'Yesterday, we ___ dinner at home.',options:['have','has','had','having'],a:'had',hint:'Past simple of “have”.'},
+ {level:'A2',q:'Choose the correct sentence.',options:['He can swims.','He can swim.','He can swimming.','He cans swim.'],a:'He can swim.',hint:'Modal + base verb.'},
+ {level:'A2',q:'I have lived here ___ 2024.',options:['for','since','from','during'],a:'since',hint:'Use “since” with a starting point.'},
+ {level:'B1',q:'If it rains, we ___ at home.',options:['stay','stayed','will stay','would stayed'],a:'will stay',hint:'First conditional: if + present, will + verb.'},
+ {level:'B1',q:'The report ___ by Friday.',options:['must finish','must be finished','must finished','must finishing'],a:'must be finished',hint:'Passive: modal + be + past participle.'},
+ {level:'B1',q:'Which sentence is correct?',options:['I used to play outside.','I use to played outside.','I used play outside.','I was use to play outside.'],a:'I used to play outside.',hint:'“Used to” describes a past habit.'},
+ {level:'B2',q:'Hardly ___ the room when the phone rang.',options:['I had left','had I left','I left','did I had left'],a:'had I left',hint:'Negative adverbials can trigger inversion.'},
+ {level:'B2',q:'The new policy is expected ___ costs.',options:['reduce','reducing','to reduce','reduced'],a:'to reduce',hint:'Expect + object/passive + to-infinitive.'},
+ {level:'B2',q:'Had I known earlier, I ___ differently.',options:['act','will act','would have acted','acted'],a:'would have acted',hint:'Third conditional inversion.'},
+ {level:'C1',q:'No sooner ___ the announcement than questions began.',options:['did they make','they had made','had they made','they made'],a:'had they made',hint:'No sooner + past perfect inversion + than.'}
 ];
+const levels=['A1','A2','B1','B2','C1'];
+const levelIndex=l=>levels.indexOf(l);
+const poolUpTo=(items,level)=>items.filter(x=>levelIndex(x.level)<=levelIndex(level));
+const shuffle=a=>{const arr=[...a];for(let i=arr.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[arr[i],arr[j]]=[arr[j],arr[i]]}return arr};
+const pick=a=>a[Math.floor(Math.random()*a.length)];
 
-let rescue = {type:'vocab', index:0, time:12, timer:null, answered:false};
-let focus = {seconds:15*60, timer:null, selected:15, wakeLock:null};
+function showView(name){$$('.view').forEach(v=>v.classList.remove('active'));$('#'+name+'View')?.classList.add('active');$$('.nav').forEach(n=>n.classList.toggle('active',n.dataset.view===name));if(name==='focus'){loadRandomFocus();randomStory();}window.scrollTo({top:0,behavior:'smooth'});} 
+$$('[data-view]').forEach(b=>b.addEventListener('click',()=>showView(b.dataset.view)));
+$$('[data-game]').forEach(b=>b.addEventListener('click',()=>b.dataset.game==='crossword'?startCrossword():startBattle(b.dataset.game)));
 
-function renderStats(){
-  document.getElementById('xpValue').textContent = state.xp;
-  document.getElementById('streakValue').textContent = state.streak;
-  document.getElementById('progressXP').textContent = state.xp;
-  document.getElementById('accuracyValue').textContent = Math.round((state.correct/Math.max(1,state.total))*100)+'%';
-  document.getElementById('wordsValue').textContent = state.words;
-  document.getElementById('focusValue').textContent = state.focusMinutes+'m';
-  document.getElementById('levelProgressText').textContent = state.levelProgress+'%';
-  document.getElementById('levelProgressBar').style.width = state.levelProgress+'%';
+function renderDashboard(){const acc=state.total?Math.round(state.correct/state.total*100):0;$('#xpTop').textContent=state.xp;$('#homeXp').textContent=state.xp;$('#homeAccuracy').textContent=acc+'%';$('#homeStreak').textContent=state.streak;$('#progressXp').textContent=state.xp;$('#progressAccuracy').textContent=acc+'%';$('#progressQuestions').textContent=state.total;$('#progressCombo').textContent=state.bestCombo;$('#homeLevel').textContent=state.level+(levelIndex(state.level)>=2?' Challenger':' Explorer');$('#readerLevel').textContent=state.level;$$('#levelPicker button').forEach(b=>b.classList.toggle('active',b.dataset.level===state.level));$$('#languagePicker button').forEach(b=>b.classList.toggle('active',b.dataset.language===state.language));$$('#speedPicker button').forEach(b=>b.classList.toggle('active',b.dataset.speed===state.speed));$('#languagePicker [data-language="english"]').disabled=levelIndex(state.level)<2;$('#languageNote').textContent=levelIndex(state.level)<2?'English-only becomes available from B1.':'English-only mode is available at your level.'; updateAudioToggles(); renderHistory();}
+function renderHistory(){const box=$('#historyList');box.innerHTML=state.history.length?state.history.slice(0,6).map(h=>`<div class="history-item"><span>${h.mode}</span><b>${h.score} XP</b></div>`).join(''):'<div class="history-empty">Play your first mission and your recent practice will appear here.</div>';}
+
+$$('#levelPicker button').forEach(b=>b.onclick=()=>{state.level=b.dataset.level;if(levelIndex(state.level)<2&&state.language==='english')state.language='mixed';save();});
+$$('#languagePicker button').forEach(b=>b.onclick=()=>{if(b.disabled)return;state.language=b.dataset.language;save();});
+$$('#speedPicker button').forEach(b=>b.onclick=()=>{state.speed=b.dataset.speed;save();});
+$('#resetProgress').onclick=()=>{if(!confirm('Reset all LIVNOI scores, best scores and progress on this device?'))return;state={...defaultState,level:state.level,language:state.language,speed:state.speed,music:state.music,sfx:state.sfx,powerSound:state.powerSound,bestScores:{vocab:0,grammar:0}};save();toast('All scores reset');};
+
+let audioCtx=null,musicTimer=null;
+function ctx(){if(!audioCtx)audioCtx=new (window.AudioContext||window.webkitAudioContext)();if(audioCtx.state==='suspended')audioCtx.resume();return audioCtx}
+function tone(freq=440,dur=.08,type='sine',gain=.04){if(!state.sfx)return;const c=ctx(),o=c.createOscillator(),g=c.createGain();o.type=type;o.frequency.value=freq;g.gain.setValueAtTime(gain,c.currentTime);g.gain.exponentialRampToValueAtTime(.001,c.currentTime+dur);o.connect(g).connect(c.destination);o.start();o.stop(c.currentTime+dur)}
+function powerTone(hero=true){if(!state.sfx||!state.powerSound)return;[hero?420:180,hero?620:140,hero?840:110].forEach((f,i)=>setTimeout(()=>tone(f,.13,'sawtooth',.035),i*55))}
+function startMusic(){stopMusic();if(!state.music)return;let i=0;const notes=[110,138.6,164.8,138.6,123.5,155.6,185,155.6];musicTimer=setInterval(()=>{if(!state.music)return;const c=ctx(),o=c.createOscillator(),g=c.createGain();o.type='triangle';o.frequency.value=notes[i++%notes.length];g.gain.value=.012;o.connect(g).connect(c.destination);o.start();o.stop(c.currentTime+.24)},300)}
+function stopMusic(){if(musicTimer){clearInterval(musicTimer);musicTimer=null}}
+function updateAudioToggles(){[['musicToggle','music'],['sfxToggle','sfx'],['powerToggle','powerSound']].forEach(([id,k])=>{const b=$('#'+id);if(!b)return;b.textContent=state[k]?'ON':'OFF';b.classList.toggle('on',state[k])});if($('#quickSound'))$('#quickSound').textContent=state.sfx?'SND':'MUTE';if($('#pauseSound'))$('#pauseSound').textContent=state.sfx?'Sound ON':'Sound OFF'}
+[['musicToggle','music'],['sfxToggle','sfx'],['powerToggle','powerSound']].forEach(([id,k])=>{$('#'+id).onclick=()=>{state[k]=!state[k];save();if(k==='music'&&state.music&&!$('#battleScreen').classList.contains('hidden'))startMusic();if(k==='music'&&!state.music)stopMusic()}});
+
+let battle={mode:'vocab',round:0,heroHp:100,villainHp:100,combo:1,score:0,timeLeft:12,maxTime:12,timer:null,current:null,locked:false,paused:false,hints:3};
+const speedSeconds={relaxed:16,normal:12,fast:9};
+function startBattle(mode){battle={mode,round:0,heroHp:100,villainHp:100,combo:1,score:0,timeLeft:speedSeconds[state.speed],maxTime:speedSeconds[state.speed],timer:null,current:null,locked:false,paused:false,hints:3};$('#battleScreen').classList.remove('hidden');$('#battleScreen').setAttribute('aria-hidden','false');$('#resultOverlay').classList.add('hidden');$('#pauseOverlay').classList.add('hidden');$('#battleMode').textContent=mode==='vocab'?'VOCABULARY':'GRAMMAR';$('#friendBubble').classList.add('hidden');updateAudioToggles();startMusic();updateBattleUI();nextQuestion();}
+function endBattle(saveRun=true){clearInterval(battle.timer);stopMusic();$('#battleScreen').classList.add('hidden');$('#battleScreen').setAttribute('aria-hidden','true');$('#pauseOverlay').classList.add('hidden');if(saveRun&&battle.round>0){state.xp+=battle.score;state.bestScores[battle.mode]=Math.max(state.bestScores[battle.mode]||0,battle.score);state.history.unshift({mode:battle.mode==='vocab'?'Vocabulary':'Grammar',score:battle.score,date:Date.now()});state.history=state.history.slice(0,12);save();}}
+function sceneForScore(score){return score>=80?'storm':score>=65?'sunset':score>=50?'airport':score>=30?'ring':'mall'}
+function updateScene(){const a=$('#arena');['mall','ring','airport','sunset','storm'].forEach(x=>a.classList.remove('scene-'+x));a.classList.add('scene-'+sceneForScore(battle.score))}
+function updateBattleUI(){$('#heroHpFill').style.width=battle.heroHp+'%';$('#heroHpText').textContent=Math.round(battle.heroHp);$('#villainHpFill').style.width=battle.villainHp+'%';$('#villainHpText').textContent=Math.round(battle.villainHp);$('#battleScore').textContent=battle.score;$('#comboText').textContent='COMBO ×'+battle.combo;$('#battleLevel').textContent=`${state.level} · ROUND ${battle.round+1}`;$('#useHint').textContent='HINT '+battle.hints;if($('#pauseHint'))$('#pauseHint').textContent=`Use hint (${battle.hints})`;updateScene();}
+function nextQuestion(){if(battle.heroHp<=0)return finishRound(false);if(battle.villainHp<=0)return finishRound(true);battle.round++;battle.locked=false;$('#battleFeedback').className='battle-feedback hidden';$('#answers').innerHTML='';$('#battleHint').textContent='Choose the best answer.';battle.current=battle.mode==='vocab'?makeVocabQuestion():makeGrammarQuestion();$('#battleQuestion').textContent=battle.current.q;$('#questionDirection').textContent=battle.current.dir;renderAnswers(battle.current.options,battle.current.a);battle.timeLeft=battle.maxTime=speedSeconds[state.speed];updateBattleUI();startQuestionTimer();}
+function makeVocabQuestion(){const pool=poolUpTo(WORDS,state.level);const word=pick(pool);let englishOnly=state.language==='english'&&levelIndex(state.level)>=2;let reverse=!englishOnly&&Math.random()<.5;let q,answer,dir,distractors;if(englishOnly){q=word.clue;answer=word.en;dir='ENGLISH ONLY';distractors=shuffle(pool.filter(x=>x.en!==word.en)).slice(0,1).map(x=>x.en)}else if(reverse){q=word.th;answer=word.en;dir='TH → EN';distractors=shuffle(pool.filter(x=>x.en!==word.en)).slice(0,1).map(x=>x.en)}else{q=word.en;answer=word.th;dir='EN → TH';distractors=shuffle(pool.filter(x=>x.en!==word.en)).slice(0,1).map(x=>x.th)}return{q,a:answer,options:shuffle([answer,...distractors]),dir,hint:englishOnly?word.clue:`${word.en} = ${word.th}`};}
+function makeGrammarQuestion(){const pool=poolUpTo(GRAMMAR,state.level);const item=pick(pool);const wrong=shuffle(item.options.filter(x=>x!==item.a))[0];return{q:item.q,a:item.a,options:shuffle([item.a,wrong]),dir:'GRAMMAR · '+item.level,hint:item.hint};}
+function renderAnswers(options,answer){options.forEach(opt=>{const b=document.createElement('button');b.className='answer-btn';b.textContent=opt;b.onclick=()=>submitAnswer(opt,b,answer);$('#answers').appendChild(b)});}
+function startQuestionTimer(){clearInterval(battle.timer);let last=performance.now();battle.timer=setInterval(()=>{if(battle.paused){last=performance.now();return}const now=performance.now();battle.timeLeft=Math.max(0,battle.timeLeft-(now-last)/1000);last=now;$('#timerText').textContent=battle.timeLeft.toFixed(1);$('#timerFill').style.width=(battle.timeLeft/battle.maxTime*100)+'%';const villain=$('#villain');if(battle.timeLeft<battle.maxTime*.62)villain.classList.add('advance');else villain.classList.remove('advance');if(battle.timeLeft<=0){clearInterval(battle.timer);timeoutAnswer();}},80);}
+function timeoutAnswer(){if(battle.locked)return;battle.locked=true;state.total++;battle.combo=1;const dmg=24;battle.heroHp=Math.max(0,battle.heroHp-dmg);attackAnimation(false);showFeedback(false,'Time’s up!');updateBattleUI();setTimeout(nextQuestion,700);}
+function submitAnswer(opt,button,answer){if(battle.locked||battle.paused)return;battle.locked=true;clearInterval(battle.timer);state.total++;const correct=opt===answer;$$('.answer-btn').forEach(b=>{b.disabled=true;if(b.textContent===answer)b.classList.add('correct')});if(correct){state.correct++;button.classList.add('correct');const speedBonus=Math.max(0,Math.round(battle.timeLeft/3));const gain=5+(battle.combo-1)+speedBonus;battle.score+=gain;battle.villainHp=Math.max(0,battle.villainHp-(16+Math.min(10,battle.combo*2)));battle.combo++;state.bestCombo=Math.max(state.bestCombo,battle.combo-1);attackAnimation(true);showFeedback(true,`+${gain}`)}else{button.classList.add('wrong');battle.heroHp=Math.max(0,battle.heroHp-20);battle.combo=1;attackAnimation(false);showFeedback(false,battle.current.hint||`Correct: ${answer}`)}updateBattleUI();setTimeout(nextQuestion,650);}
+function attackAnimation(heroWins){powerTone(heroWins);const shot=$('#energyShot');const target=heroWins?$('#villain'):$('#heroCharacter');shot.className='energy-shot '+(heroWins?'fire':'backfire');target.classList.add('hit');$('#arena').classList.add('screen-shake');setTimeout(()=>{$('#arena').classList.remove('screen-shake');shot.className='energy-shot';target.classList.remove('hit');$('#villain').classList.remove('advance')},520)}
+function showFeedback(good,text){tone(good?720:160,.1,good?'sine':'square',.03);const f=$('#battleFeedback');f.textContent=text;f.className='battle-feedback '+(good?'good':'bad');}
+function finishRound(win){clearInterval(battle.timer);battle.locked=true;stopMusic();state.bestScores[battle.mode]=Math.max(state.bestScores[battle.mode]||0,battle.score);state.xp+=battle.score;state.history.unshift({mode:battle.mode==='vocab'?'Vocabulary':'Grammar',score:battle.score,date:Date.now()});state.history=state.history.slice(0,12);save();if(win)$('#friendBubble').classList.remove('hidden');$('#resultLabel').textContent=win?'MISSION COMPLETE':'MISSION OVER';$('#resultTitle').textContent=win?'Rival became your friend!':'Your hero needs a recharge';$('#resultScore').textContent=battle.score;$('#resultBest').textContent='BEST '+state.bestScores[battle.mode];$('#resultOverlay').classList.remove('hidden');}
+function useHint(){if(battle.locked||battle.paused||battle.hints<=0)return;const buttons=$$('.answer-btn').filter(b=>!b.disabled&&b.textContent!==battle.current.a);shuffle(buttons).slice(0,Math.min(2,buttons.length)).forEach(b=>{b.disabled=true;b.style.opacity='.22'});battle.hints--;tone(520,.12,'triangle',.025);updateBattleUI();}
+$('#useHint').onclick=useHint;$('#pauseHint').onclick=()=>{useHint();closePause()};
+function openPause(){if(battle.locked)return;battle.paused=true;$('#pauseOverlay').classList.remove('hidden');updateAudioToggles()}
+function closePause(){battle.paused=false;$('#pauseOverlay').classList.add('hidden')}
+$('#pauseBattle').onclick=openPause;$('#resumeBattle').onclick=closePause;$('#quickSound').onclick=()=>{state.sfx=!state.sfx;save()};$('#pauseSound').onclick=()=>{state.sfx=!state.sfx;save()};
+$('#restartBattle').onclick=()=>{const m=battle.mode;endBattle(false);startBattle(m)};$('#leaveBattle').onclick=()=>{endBattle(true);showView('home')};
+$('#resultAgain').onclick=()=>{const m=battle.mode;$('#resultOverlay').classList.add('hidden');endBattle(false);startBattle(m)};$('#resultHome').onclick=()=>{$('#resultOverlay').classList.add('hidden');endBattle(false);showView('home')};
+$('#exitBattle').onclick=()=>{openPause()};
+const FOCUS_STORIES=[
+ {level:'A1',title:'The Last Train Home',mins:'1 min read',text:["Mina leaves the library late in the evening. The street is quiet, and the sky is pink and purple.","She runs to the station and sees the last train waiting. The doors begin to close, but the driver sees her and waits a few seconds.","Mina smiles and says, ‘Thank you.’ On the train, she decides to leave the library ten minutes earlier next time."],vocab:[['quiet','เงียบ'],['station','สถานี'],['wait','รอ']]},
+ {level:'A1',title:'A Small Umbrella',mins:'1 min read',text:["Leo looks outside and sees a bright blue sky. He leaves home without an umbrella.","Ten minutes later, rain starts to fall. A girl at the bus stop moves her small umbrella so Leo can stand under it too.","They laugh because the umbrella is too small, but they stay dry until the bus arrives."],vocab:[['umbrella','ร่ม'],['rain','ฝน'],['arrive','มาถึง']]},
+ {level:'A2',title:'The Café With No Menu',mins:'2 min read',text:["Nora finds a tiny café near her school. There is no menu on the wall, so she asks the owner what she should order.","The owner smiles and says, ‘Tell me how you feel today.’ Nora says she is tired but happy.","A few minutes later, he brings her a warm chocolate drink with orange. It is not what she expected, but it is exactly what she needed."],vocab:[['owner','เจ้าของ'],['tired','เหนื่อย'],['expect','คาดหวัง']]},
+ {level:'A2',title:'The Phone on the Bench',mins:'2 min read',text:["Jin is walking through a park when he sees a phone on a bench. Nobody is nearby.","He waits for five minutes. Then the phone rings. A worried man asks if Jin has found a black phone.","They meet near the fountain. The man is relieved and offers Jin some money, but Jin only asks him to help someone else one day."],vocab:[['bench','ม้านั่ง'],['worried','กังวล'],['relieved','โล่งใจ']]},
+ {level:'B1',title:'The Light Across the Street',mins:'2 min read',text:["Every night, Aya studies at the same desk by her window. Across the street, she can see another student doing exactly the same thing.","They never speak, but when one of them finishes studying, they turn their desk lamp on and off twice. It becomes a quiet way to say, ‘Good job. See you tomorrow.’", "Months later, Aya begins a new class and recognizes the student sitting beside her. Both of them start laughing before the teacher even arrives."],vocab:[['across','อีกฝั่งหนึ่ง'],['recognize','จำได้'],['beside','ข้าง ๆ']]},
+ {level:'B1',title:'One More Stop',mins:'2 min read',text:["Daniel usually gets off the tram at the same stop every day. One afternoon, he is so busy reading that he misses it.","Instead of getting annoyed, he decides to walk back from the next stop. The unfamiliar street leads him past a small second-hand bookshop.","He goes inside for five minutes and finds a novel he has been searching for for years. Missing one stop turns out to be the best part of his day."],vocab:[['miss','พลาด'],['unfamiliar','ไม่คุ้นเคย'],['turn out','กลายเป็นว่า']]},
+ {level:'B2',title:'The Five-Minute Rule',mins:'3 min read',text:["Suri used to postpone difficult tasks because starting them felt more stressful than doing them. One day, she made a simple rule: she only had to work on a task for five minutes.","At first, the rule seemed almost pointless. Yet once she began, she often continued for much longer because the hardest part had already passed.","The rule did not make every task enjoyable, but it changed her relationship with procrastination. Starting became a small action instead of a huge decision."],vocab:[['postpone','เลื่อนออกไป'],['pointless','ดูไร้ประโยชน์'],['procrastination','การผัดวันประกันพรุ่ง']]},
+ {level:'C1',title:'A City That Learned to Slow Down',mins:'3 min read',text:["For years, the centre of Bellmare was designed around speed. Cars moved quickly, cafés served people in minutes, and pedestrians hurried between appointments.","Then the city tested a weekend without traffic in three central streets. Shop owners initially worried that fewer cars would mean fewer customers, but the opposite happened. People stayed longer, noticed small businesses they had previously passed, and spoke to one another more often.","The experiment did not prove that slower is always better. It showed something subtler: when a city changes the pace of a place, it can also change what people notice and value."],vocab:[['initially','ในตอนแรก'],['opposite','ตรงกันข้าม'],['subtler','ละเอียดอ่อนกว่า']]}
+];
+let currentStoryIndex=-1;
+function storyPool(){const max=levelIndex(state.level);const pool=FOCUS_STORIES.map((x,i)=>({...x,_i:i})).filter(x=>levelIndex(x.level)<=max);return pool.length?pool:FOCUS_STORIES.slice(0,1).map((x,i)=>({...x,_i:i}));}
+function renderStory(story){currentStoryIndex=story._i ?? FOCUS_STORIES.indexOf(story);$('#storyLevel').textContent=story.level;$('#shortStoryTitle').textContent=story.title;$('#shortStoryMeta').textContent=`${story.level} · Easy reading · ${story.mins}`;$('#shortStoryText').innerHTML=story.text.map(x=>`<p>${x}</p>`).join('');$('#storyVocab').innerHTML=story.vocab.map(([en,th])=>`<span class="story-chip"><b>${en}</b> · ${th}</span>`).join('');}
+function randomStory(){const pool=storyPool();let options=pool.filter(x=>x._i!==currentStoryIndex);renderStory(pick(options.length?options:pool));}
+function nextStory(){const pool=storyPool();let pos=pool.findIndex(x=>x._i===currentStoryIndex);renderStory(pool[(pos+1+pool.length)%pool.length]);}
+
+const FOCUS_PACKS=[
+ {videoId:'MX-PellL00s',title:'A bright English warm-up',lines:[
+  {en:"I'm ready.",read:'ไอม์ เรด-ดี',th:'ฉันพร้อมแล้ว'},
+  {en:'I can do this.',read:'ไอ แคน ดู ดิส',th:'ฉันทำได้'},
+  {en:'Let’s begin.',read:'เล็ทส์ บิ-กิน',th:'มาเริ่มกันเถอะ'},
+  {en:'Try one more time.',read:'ทราย วัน มอร์ ไทม์',th:'ลองอีกครั้งนะ'}]},
+ {videoId:'sUrH5YOA-WI',title:'Cartoon word break',lines:[
+  {en:'What does it mean?',read:'ว็อท ดัส อิท มีน',th:'มันหมายความว่าอะไร'},
+  {en:'That sounds fun.',read:'แด็ต ซาวนด์ส ฟัน',th:'ฟังดูสนุกนะ'},
+  {en:'Look over there.',read:'ลุค โอ-เวอร์ แดร์',th:'ดูตรงนั้นสิ'},
+  {en:'Now I understand.',read:'นาว ไอ อัน-เดอร์-สแตนด์',th:'ตอนนี้ฉันเข้าใจแล้ว'}]},
+ {videoId:'MX-PellL00s',title:'Everyday cartoon phrases',lines:[
+  {en:'Wait for me!',read:'เวท ฟอร์ มี',th:'รอฉันด้วย'},
+  {en:'Here we go.',read:'เฮียร์ วี โก',th:'เอาล่ะ ไปกันเลย'},
+  {en:'Are you okay?',read:'อาร์ ยู โอ-เค',th:'คุณโอเคไหม'},
+  {en:'We made it!',read:'วี เมด อิท',th:'เราทำสำเร็จแล้ว'}]},
+ {videoId:'sUrH5YOA-WI',title:'Quick listening mood',lines:[
+  {en:'That was close.',read:'แด็ต วอส โคลส',th:'เกือบไปแล้ว'},
+  {en:'Don’t give up.',read:'โดนท์ กิฟ อัพ',th:'อย่ายอมแพ้'},
+  {en:'I have an idea.',read:'ไอ แฮฟ แอน ไอ-เดีย',th:'ฉันมีไอเดีย'},
+  {en:'See you soon.',read:'ซี ยู ซูน',th:'แล้วเจอกันเร็ว ๆ นี้'}]}
+];
+let lastFocusPack=-1;
+function loadRandomFocus(){
+ if(!$('#focusVideo'))return;
+ let idx=FOCUS_PACKS.length===1?0:Math.floor(Math.random()*FOCUS_PACKS.length);
+ if(idx===lastFocusPack)idx=(idx+1+Math.floor(Math.random()*(FOCUS_PACKS.length-1)))%FOCUS_PACKS.length;
+ lastFocusPack=idx;
+ const pack=FOCUS_PACKS[idx];
+ $('#focusVideo').src=`https://www.youtube-nocookie.com/embed/${pack.videoId}?rel=0&playsinline=1`;
+ $('#focusStoryTitle').textContent=pack.title;
+ $('#focusLines').innerHTML=pack.lines.map((x,i)=>`<div class="focus-line"><span class="line-no">${String(i+1).padStart(2,'0')}</span><div><strong>${x.en}</strong><small>${x.read}</small><p>${x.th}</p></div><button class="speak-line" data-say="${x.en.replace(/"/g,'&quot;')}">PLAY</button></div>`).join('');
+ $$('.speak-line').forEach(b=>b.onclick=()=>speakEnglish(b.dataset.say));
 }
+function speakEnglish(text){try{speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(text);u.lang='en-US';u.rate=.84;speechSynthesis.speak(u)}catch(e){}}
+let focusSeconds=25*60,focusTimer=null,wakeLock=null;$$('.focus-options button').forEach(b=>b.onclick=()=>{$$('.focus-options button').forEach(x=>x.classList.remove('active'));b.classList.add('active');focusSeconds=Number(b.dataset.mins)*60;renderFocus();});function renderFocus(){const m=Math.floor(focusSeconds/60),s=focusSeconds%60;$('#focusTimer').textContent=`${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;}$('#focusStart').onclick=async()=>{if(focusTimer){clearInterval(focusTimer);focusTimer=null;$('#focusStart').textContent='Start focus';$('#focusStatus').textContent='Session paused.';if(wakeLock)wakeLock.release();return}try{if('wakeLock'in navigator)wakeLock=await navigator.wakeLock.request('screen')}catch(e){}$('#focusStart').textContent='Pause';$('#focusStatus').textContent='Focus mode active.';focusTimer=setInterval(()=>{focusSeconds--;renderFocus();if(focusSeconds<=0){clearInterval(focusTimer);focusTimer=null;$('#focusStart').textContent='Start again';$('#focusStatus').textContent='Session complete. Nice work.';}},1000);};
 
-function showView(name){
-  document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
-  document.getElementById(name+'View').classList.add('active');
-  document.querySelectorAll('.nav-btn').forEach(b=>b.classList.toggle('active',b.dataset.view===name));
-  window.scrollTo({top:0,behavior:'smooth'});
-}
-document.querySelectorAll('.nav-btn').forEach(b=>b.addEventListener('click',()=>showView(b.dataset.view)));
-document.querySelectorAll('[data-go]').forEach(b=>b.addEventListener('click',()=>{showView(b.dataset.go); setTimeout(()=>openLesson(b.dataset.skill),50)}));
-document.querySelectorAll('.skill-card').forEach(b=>b.addEventListener('click',()=>openLesson(b.dataset.skill)));
+// Crossword: generated from same word pool, simple compact mini-crossword
+const CW_PATTERNS=[
+ [{w:0,r:1,c:1,d:'h'},{w:1,r:0,c:3,d:'v'},{w:2,r:3,c:1,d:'h'},{w:3,r:2,c:5,d:'v'}],
+ [{w:0,r:0,c:0,d:'h'},{w:1,r:0,c:2,d:'v'},{w:2,r:4,c:1,d:'h'},{w:3,r:2,c:6,d:'v'}]
+];
+function startCrossword(){const pool=poolUpTo(WORDS,state.level).filter(w=>w.en.length<=8);const selected=shuffle(pool).slice(0,4);$('#crosswordScreen').classList.remove('hidden');$('#crosswordLevel').textContent=state.level+' WORD GRID';buildCrossword(selected);}$('#exitCrossword').onclick=()=>$('#crosswordScreen').classList.add('hidden');$('#newCrossword').onclick=()=>{const pool=poolUpTo(WORDS,state.level).filter(w=>w.en.length<=8);buildCrossword(shuffle(pool).slice(0,4));};
+function buildCrossword(words){const size=9,grid=Array.from({length:size},()=>Array(size).fill(null));const placements=placeWords(words,size);placements.forEach((p,idx)=>{[...p.word.en.toUpperCase()].forEach((ch,i)=>{const r=p.r+(p.d==='v'?i:0),c=p.c+(p.d==='h'?i:0);if(r<size&&c<size){grid[r][c]=grid[r][c]||{ch,nums:[]};grid[r][c].ch=ch;if(i===0)grid[r][c].nums.push(idx+1)}})});const box=$('#crosswordGrid');box.innerHTML='';grid.flat().forEach((cell,i)=>{const d=document.createElement('div');d.className='cw-cell '+(!cell?'block':'');if(cell){if(cell.nums?.length){const n=document.createElement('span');n.className='num';n.textContent=cell.nums[0];d.appendChild(n)}const inp=document.createElement('input');inp.maxLength=1;inp.dataset.answer=cell.ch;inp.autocomplete='off';inp.inputMode='text';inp.oninput=()=>{inp.value=inp.value.toUpperCase().replace(/[^A-Z]/g,'');checkCrossword()};d.appendChild(inp)}box.appendChild(d)});$('#crosswordClueList').innerHTML=placements.map((p,i)=>`<div class="clue"><b>${i+1}.</b> ${state.language==='english'&&levelIndex(state.level)>=2?p.word.clue:p.word.th}</div>`).join('');$('#crosswordScore').textContent='0';}
+function placeWords(words,size){const placed=[];words.forEach((word,idx)=>{const len=word.en.length;let d=idx%2===0?'h':'v';let r=(idx*2+1)%Math.max(1,size-(d==='v'?len:1));let c=(idx*2+1)%Math.max(1,size-(d==='h'?len:1));r=Math.min(r,size-(d==='v'?len:1));c=Math.min(c,size-(d==='h'?len:1));placed.push({word,r,c,d})});return placed;}
+function checkCrossword(){const inputs=$$('#crosswordGrid input');let filled=0,good=0;inputs.forEach(i=>{if(i.value)filled++;if(i.value===i.dataset.answer)good++});$('#crosswordScore').textContent=good;if(filled===inputs.length&&good===inputs.length){state.xp+=40;state.history.unshift({mode:'Crossword',score:40,date:Date.now()});save();toast('Crossword complete +40 XP');}}
+function toast(msg){const t=$('#toast');t.textContent=msg;t.classList.remove('hidden');setTimeout(()=>t.classList.add('hidden'),1600)}
 
-function openLesson(skill){
-  const panel = document.getElementById('lessonPanel');
-  panel.classList.remove('hidden');
-  const content = {
-    vocab:['🧠 Vocabulary Rescue','Race the timer and save the patient by choosing the right meaning.'],
-    grammar:['🧩 Grammar Mission','Fix English sentences before the monitor hits zero.'],
-    listen:['🎧 Listening Mission','Hear a word, then choose what you heard.'],
-    speak:['🎙️ Speaking Lab','Say a sentence aloud and let your browser check what it hears.'],
-    read:['📖 Reading Story','Read a short story, then answer one comprehension question.'],
-    write:['✍️ Writing Builder','Write a short sentence using the target word.']
-  }[skill];
-  panel.innerHTML = `<h3>${content[0]}</h3><p>${content[1]}</p><button class="primary-btn" id="launchLesson">Start now</button>`;
-  document.getElementById('launchLesson').onclick=()=> launchSkill(skill);
-  panel.scrollIntoView({behavior:'smooth',block:'center'});
-}
-
-function launchSkill(skill){
-  if(skill==='vocab' || skill==='grammar') return openRescue(skill);
-  if(skill==='listen') return listeningMission();
-  if(skill==='speak') return speakingMission();
-  if(skill==='read'){showView('focus'); return toast('Reading story opened 📖')}
-  if(skill==='write') return writingMission();
-}
-
-function openRescue(type='vocab'){
-  rescue.type=type; rescue.index=0; state.hearts=3; state.combo=1;
-  document.getElementById('rescueModal').classList.remove('hidden');
-  document.getElementById('rescueModal').setAttribute('aria-hidden','false');
-  renderQuestion();
-}
-function closeRescue(){clearInterval(rescue.timer); document.getElementById('rescueModal').classList.add('hidden')}
-document.getElementById('startRescueBtn').onclick=()=>openRescue('vocab');
-document.getElementById('closeRescueBtn').onclick=closeRescue;
-
-document.getElementById('nextQuestionBtn').onclick=()=>{
-  const bank = rescue.type==='grammar'?grammarQuestions:vocabQuestions;
-  rescue.index=(rescue.index+1)%bank.length; renderQuestion();
-};
-
-function renderQuestion(){
-  clearInterval(rescue.timer); rescue.answered=false; rescue.time=12;
-  const bank = rescue.type==='grammar'?grammarQuestions:vocabQuestions;
-  const q=bank[rescue.index];
-  document.getElementById('rescueLevel').textContent=`${q.level} ${rescue.type==='grammar'?'Grammar':'Vocabulary'}`;
-  document.getElementById('questionTitle').textContent=q.prompt;
-  document.getElementById('questionHint').textContent='Answer before the rescue timer reaches zero.';
-  document.getElementById('feedbackBox').classList.add('hidden');
-  document.getElementById('nextQuestionBtn').classList.add('hidden');
-  document.getElementById('patientHealth').textContent='❤️'.repeat(Math.max(0,state.hearts))+'🖤'.repeat(Math.max(0,3-state.hearts));
-  document.getElementById('comboValue').textContent='×'+state.combo;
-  const grid=document.getElementById('answerGrid'); grid.innerHTML='';
-  q.options.forEach((opt,i)=>{const b=document.createElement('button');b.className='answer-btn';b.textContent=opt;b.onclick=()=>answer(i,b);grid.appendChild(b)});
-  startRescueTimer();
-}
-function startRescueTimer(){
-  const el=document.getElementById('rescueTimer'); const ring=el.parentElement; el.textContent=rescue.time; ring.classList.remove('danger');
-  rescue.timer=setInterval(()=>{ rescue.time--; el.textContent=rescue.time; if(rescue.time<=4) ring.classList.add('danger'); if(rescue.time<=0){clearInterval(rescue.timer); timeoutAnswer();}},1000)
-}
-function answer(index,btn){
-  if(rescue.answered)return; rescue.answered=true; clearInterval(rescue.timer);
-  const bank=rescue.type==='grammar'?grammarQuestions:vocabQuestions; const q=bank[rescue.index]; state.total++;
-  document.querySelectorAll('.answer-btn').forEach((b,i)=>{b.disabled=true;if(i===q.answer)b.classList.add('correct')});
-  if(index===q.answer){btn.classList.add('correct'); const gain=10+Math.max(0,rescue.time)*2+(state.combo-1)*3; state.xp+=gain; state.correct++; state.combo=Math.min(9,state.combo+1); state.levelProgress=Math.min(100,state.levelProgress+2); if(rescue.type==='vocab') state.words++; feedback(`✅ Rescue successful! +${gain} XP`,q.note)}
-  else {btn.classList.add('wrong'); state.hearts--; state.combo=1; feedback('💔 Not quite. The patient lost one heart.',q.note)}
-  finishQuestion();
-}
-function timeoutAnswer(){ if(rescue.answered)return; rescue.answered=true; state.total++; state.hearts--; state.combo=1; const bank=rescue.type==='grammar'?grammarQuestions:vocabQuestions; const q=bank[rescue.index]; document.querySelectorAll('.answer-btn').forEach((b,i)=>{b.disabled=true;if(i===q.answer)b.classList.add('correct')}); feedback('⏱️ Time ran out — rescue missed.',q.note); finishQuestion(); }
-function feedback(title,note){const box=document.getElementById('feedbackBox');box.innerHTML=`<b>${title}</b><br>${note}`;box.classList.remove('hidden')}
-function finishQuestion(){ save(); renderStats(); document.getElementById('patientHealth').textContent='❤️'.repeat(Math.max(0,state.hearts))+'🖤'.repeat(Math.max(0,3-state.hearts)); document.getElementById('comboValue').textContent='×'+state.combo; const next=document.getElementById('nextQuestionBtn'); next.textContent=state.hearts<=0?'Restart rescue':'Next mission'; next.classList.remove('hidden'); if(state.hearts<=0){next.onclick=()=>{state.hearts=3;state.combo=1;rescue.index=0;document.getElementById('nextQuestionBtn').onclick=()=>{const bank=rescue.type==='grammar'?grammarQuestions:vocabQuestions;rescue.index=(rescue.index+1)%bank.length;renderQuestion()};renderQuestion()}} }
-
-function listeningMission(){
-  const q=vocabQuestions[Math.floor(Math.random()*vocabQuestions.length)];
-  if('speechSynthesis' in window){ speechSynthesis.cancel(); const u=new SpeechSynthesisUtterance(q.word); u.lang='en-GB'; u.rate=.85; speechSynthesis.speak(u); toast(`🎧 Listen carefully: tap again if you want to replay “${q.word}”.`); }
-  else toast('Listening audio is not supported in this browser.');
-}
-
-function speakingMission(){
-  const target='I am improving my English every day.';
-  const Rec=window.SpeechRecognition||window.webkitSpeechRecognition;
-  if(!Rec) return toast('Speaking check works best in Chrome/Android. iPhone support may vary.');
-  const r=new Rec(); r.lang='en-US'; r.interimResults=false; toast(`🎙️ Say: “${target}”`); r.onresult=e=>{const heard=e.results[0][0].transcript; const good=heard.toLowerCase().includes('improving my english'); if(good){state.xp+=20;state.correct++;state.total++;save();renderStats();toast('✅ Nice speaking! +20 XP')} else {state.total++;save();renderStats();toast(`I heard: “${heard}” — try again.`)}}; r.onerror=()=>toast('Microphone check could not start.'); r.start();
-}
-
-function writingMission(){
-  const panel=document.getElementById('lessonPanel'); panel.innerHTML=`<h3>✍️ Use the word “improve”</h3><p>Write one sentence of at least 5 words.</p><textarea id="writeBox" style="width:100%;min-height:110px;border-radius:15px;border:0;padding:12px;font:inherit"></textarea><button class="primary-btn" id="checkWrite">Check sentence</button>`;
-  document.getElementById('checkWrite').onclick=()=>{const t=document.getElementById('writeBox').value.trim(); const okay=t.toLowerCase().includes('improve') && t.split(/\s+/).length>=5; state.total++; if(okay){state.correct++;state.xp+=15;save();renderStats();toast('✅ Great! +15 XP')} else toast('Try a longer sentence and include “improve”.')}
-}
-
-function updateFocusDisplay(){const m=Math.floor(focus.seconds/60).toString().padStart(2,'0'),s=(focus.seconds%60).toString().padStart(2,'0');document.getElementById('focusTimer').textContent=`${m}:${s}`}
-document.querySelectorAll('.time-chip').forEach(b=>b.onclick=()=>{if(focus.timer)return;document.querySelectorAll('.time-chip').forEach(x=>x.classList.remove('active'));b.classList.add('active');focus.selected=+b.dataset.mins;focus.seconds=focus.selected*60;updateFocusDisplay()});
-async function requestWakeLock(){try{if('wakeLock'in navigator){focus.wakeLock=await navigator.wakeLock.request('screen');document.getElementById('wakeStatus').textContent='Screen wake lock is active ✨'}}catch(e){document.getElementById('wakeStatus').textContent='Wake lock was not available. Keep this page open.'}}
-document.getElementById('focusStartBtn').onclick=async()=>{
-  const btn=document.getElementById('focusStartBtn');
-  if(focus.timer){clearInterval(focus.timer);focus.timer=null;btn.textContent='Resume focus session';if(focus.wakeLock){try{await focus.wakeLock.release()}catch{} focus.wakeLock=null}return}
-  await requestWakeLock(); btn.textContent='Pause focus session';
-  focus.timer=setInterval(()=>{focus.seconds--;updateFocusDisplay();if(focus.seconds<=0){clearInterval(focus.timer);focus.timer=null;state.focusMinutes+=focus.selected;state.xp+=30;save();renderStats();btn.textContent='Start another session';toast('🎯 Focus complete! +30 XP')}},1000)
-};
-
-document.getElementById('resetBtn').onclick=()=>{localStorage.removeItem('livnoiState');location.reload()};
-function toast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.remove('hidden');clearTimeout(window.__toast);window.__toast=setTimeout(()=>t.classList.add('hidden'),3200)}
-
-if('serviceWorker' in navigator){window.addEventListener('load',()=>navigator.serviceWorker.register('./service-worker.js').catch(()=>{}))}
-renderStats(); updateFocusDisplay();
+if('serviceWorker'in navigator){window.addEventListener('load',()=>navigator.serviceWorker.register('./service-worker.js').catch(()=>{}));}
+$('#shuffleFocus').onclick=loadRandomFocus;
+$('#nextStory').onclick=nextStory;
+$('#randomStory').onclick=randomStory;
+renderDashboard();renderFocus();loadRandomFocus();randomStory();
