@@ -391,3 +391,49 @@ body{background:
 .live-dot{display:inline-block;width:7px;height:7px;border-radius:50%;background:#caff4a;box-shadow:0 0 0 4px rgba(202,255,74,.12);animation:livePulse 1.25s ease-in-out infinite;}
 @keyframes livePulse{50%{opacity:.45;transform:scale(.8)}}
 @media(max-width:760px){.flight-facts-live{grid-template-columns:repeat(2,minmax(0,1fr));}.flight-facts-live>span:last-child{grid-column:1/-1}}
+
+
+/* V1.15 — phone-first readability + one-mistake knockout */
+@media(max-width:600px){
+  html,body{font-size:16px;overflow-x:hidden}
+  body{padding:0}
+  .app-shell{width:100%;max-width:none;padding:0 12px calc(92px + env(safe-area-inset-bottom));}
+  .app-header{height:64px;margin:0 -2px 8px;padding:0 10px;border-radius:0 0 20px 20px;position:sticky;top:0;z-index:18}
+  .brand-mark{width:38px;height:38px;border-radius:12px}.brand-copy b{font-size:17px}.brand-copy small{display:none}
+  .stat-pill{padding:7px 9px;font-size:12px}
+
+  .page-head{padding:15px 4px 12px}.page-head h1{font-size:clamp(32px,10vw,42px)!important;line-height:1.02}.page-head p{font-size:15px!important;line-height:1.5!important}
+  .section-title{margin:18px 2px 10px}.section-title h2{font-size:27px!important}
+  .hero-panel{min-height:300px;padding:20px;border-radius:24px}.hero-panel h1{font-size:clamp(38px,12vw,54px)!important}.hero-panel p{max-width:72%;font-size:14px!important;line-height:1.45}.home-duel{right:8px;bottom:8px;transform:scale(.86);transform-origin:right bottom}
+  .level-strip{margin:10px 0 18px;padding:14px;border-radius:18px;gap:9px}.level-strip strong{font-size:17px!important}
+  .game-grid{gap:10px}.game-card{grid-template-columns:58px minmax(0,1fr) 34px;padding:14px;min-height:100px;border-radius:22px;gap:11px}.game-card h3{font-size:22px!important}.game-card p{font-size:13px!important;line-height:1.35}.game-card small{font-size:10px!important}.game-icon.anime-icon{width:58px;height:58px}
+  .rhythm-grid{grid-template-columns:1fr 1fr;gap:8px}.metric{min-height:94px;padding:12px}.metric:last-child{grid-column:1/-1}.metric strong{font-size:25px!important}
+  .setting-card,.history-card,.reader,.progress-cards>div{padding:16px;border-radius:19px}.setting-card label{font-size:19px!important}.segmented{grid-template-columns:repeat(3,1fr);gap:6px}.segmented button{min-height:44px;padding:9px 7px}.segmented.wide{grid-template-columns:1fr}
+
+  /* Flight selection card: keep every fact readable without horizontal squeeze. */
+  .flight-board{padding:15px;border-radius:22px;margin-top:8px}.flight-board-top{margin-bottom:13px}.flight-board-top .kicker{font-size:9px!important}.flight-board-top b{font-size:13px;letter-spacing:.09em}
+  .flight-route{grid-template-columns:minmax(0,1fr) 48px minmax(0,1fr);gap:7px}.flight-route strong{font-size:clamp(34px,11vw,44px)}.flight-route span{font-size:13px}.route-line b{font-size:17px}.route-line{gap:3px}
+  .flight-facts,.flight-facts-live{grid-template-columns:1fr 1fr!important;gap:7px;margin-top:12px}.flight-facts span,.flight-facts-live span{padding:10px!important;min-width:0}.flight-facts-live>span:last-child{grid-column:1/-1}.flight-facts small{font-size:8px}.flight-facts b,.live-time-card b{font-size:13px!important;overflow-wrap:anywhere}
+  .flight-actions{grid-template-columns:1fr!important;gap:7px;margin-top:12px}.flight-actions button{min-height:48px;margin-top:0}.flight-board #ticketStatus{font-size:12px;line-height:1.4}
+  .plane-cabin{padding:14px 10px 18px}.seat-map{gap:6px}.seat{font-size:13px}.cockpit{width:78%}
+  .ife-screen{padding:6px;border-radius:23px}.ife-bezel{border-radius:19px;border-width:3px}.ife-topbar{padding:0 10px;height:44px;font-size:9px}.flight-map{min-height:310px}.globe{width:190px;height:190px}.route-overlay{left:8px;right:8px;bottom:8px;padding:11px;border-radius:15px}.route-overlay h2{font-size:20px}.route-stats{grid-template-columns:1fr 1fr 1fr}.route-stats b{font-size:10px}.nearby-card{padding:12px}.focus-shell{padding:18px;border-radius:22px}.focus-time{font-size:clamp(38px,12vw,54px)}.flight-duration-note{flex-direction:column;align-items:flex-start}.flight-window{height:150px!important}
+
+  /* Battle: fit the important parts inside a phone viewport and make targets thumb-friendly. */
+  .battle-screen{padding:max(8px,env(safe-area-inset-top)) 9px max(10px,env(safe-area-inset-bottom));height:100dvh;overflow-y:auto}
+  .battle-hud{grid-template-columns:auto minmax(0,1fr) auto;gap:6px;margin-bottom:6px}.battle-tools{display:flex;gap:5px}.hud-btn{width:38px;height:38px;border-radius:12px;font-size:23px}.hud-btn.small{width:38px}.battle-title small{font-size:8px;letter-spacing:.1em}.battle-title b{font-size:11px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.score-chip{padding:6px 8px;border-radius:12px;font-size:12px}
+  .arena{min-height:170px!important;height:24dvh!important;max-height:210px!important;border-radius:21px}.hero-character,.villain{transform-origin:50% 100%;scale:.78;bottom:20px}.hero-character{left:5%!important}.villain{right:5%!important}.villain{transform:translateX(calc(var(--approach,0) * -62vw)) scale(.78)}
+  .timer-bar{height:23px;margin-top:6px}.timer-bar b{font-size:11px}
+  .question-zone{margin-top:7px;padding:13px;border-radius:21px;min-height:0;flex:0 0 auto}.question-meta{gap:6px;align-items:center}.question-meta #questionDirection{max-width:58%;font-size:9px;line-height:1.15}.question-meta #comboText{font-size:9px}.hint-chip{min-width:52px;padding:5px!important}
+  #battleQuestion,#battleQuestion.thai-text{font-size:clamp(30px,9.5vw,43px)!important;line-height:1.2!important;margin:8px 0 4px!important;overflow-wrap:anywhere}.question-zone>p{font-size:12px;margin-bottom:9px}.answers{grid-template-columns:1fr!important;gap:8px;margin-top:8px}.answer-btn,.answer-btn.thai-text{min-height:62px!important;padding:11px 12px!important;font-size:clamp(20px,6.2vw,28px)!important;line-height:1.25!important;border-radius:16px}.battle-feedback{font-size:12px;padding:7px;line-height:1.35}
+
+  /* Crossword: grid first, clues below, large enough to type without zooming. */
+  .crossword-screen{padding-left:8px;padding-right:8px}.crossword-content{display:flex!important;flex-direction:column;gap:10px;margin:4px auto 0;justify-content:flex-start}.crossword-grid{width:100%;max-width:430px;align-self:center;aspect-ratio:1/1;gap:2px;padding:4px;border-radius:14px}.cw-cell{border-radius:3px}.cw-cell input{font-size:clamp(15px,5.2vw,23px)!important}.cw-cell .num{font-size:7px;top:1px;left:2px}.crossword-clues{padding:14px;border-radius:18px}.crossword-clues h2{font-size:24px!important;margin-bottom:6px}.crossword-clues .clue{font-size:16px!important;line-height:1.45;padding:8px 0}.crossword-clues .primary{min-height:48px}
+
+  /* Keep labels visible on mobile navigation instead of icon-only navigation. */
+  .bottom-nav{width:calc(100% - 16px);height:68px;bottom:max(6px,env(safe-area-inset-bottom));padding:6px;border-radius:19px}.nav{gap:2px;border-radius:14px}.nav-logo{width:28px;height:28px}.nav small{display:block!important;font-size:8px!important;line-height:1}
+}
+@media(max-width:380px){
+  .flight-route strong{font-size:31px}.game-card{grid-template-columns:52px minmax(0,1fr) 32px}.game-icon.anime-icon{width:52px;height:52px}.game-card h3{font-size:20px!important}
+  .arena{height:22dvh!important;min-height:155px!important}.hero-character,.villain{scale:.7}.villain{transform:translateX(calc(var(--approach,0) * -64vw)) scale(.7)}
+  #battleQuestion,#battleQuestion.thai-text{font-size:29px!important}.answer-btn,.answer-btn.thai-text{font-size:20px!important;min-height:58px!important}
+}
