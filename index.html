@@ -2,165 +2,175 @@
 <html lang="en">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-  <meta name="theme-color" content="#111827" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no" />
+  <meta name="theme-color" content="#121719" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
   <title>LIVNOI — Learn. Play. Come Alive.</title>
   <link rel="manifest" href="manifest.webmanifest" />
+  <link rel="apple-touch-icon" href="apple-touch-icon.png" />
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
-  <div id="app" class="app-shell">
-    <header class="topbar">
-      <div>
-        <div class="brand">LIVNOI</div>
-        <div class="tagline">Learn. Play. Come Alive.</div>
-      </div>
-      <div class="top-stats">
-        <span class="pill">🔥 <b id="streakValue">3</b></span>
-        <span class="pill">⚡ <b id="xpValue">120</b></span>
-      </div>
+  <div class="app-shell">
+    <header class="app-header">
+      <button class="brand-mark" data-view="home" aria-label="LIVNOI home"><span class="brand-spark">L</span></button>
+      <div class="brand-copy"><b>LIVNOI</b><small>Learn. Play. Come Alive.</small></div>
+      <div class="header-stats"><span class="stat-pill"><span class="mini-logo">L</span><b id="xpTop">120</b> XP</span></div>
     </header>
 
-    <main id="mainContent" class="main-content">
-      <section id="homeView" class="view active">
-        <div class="hero-card">
-          <div class="hero-copy">
-            <span class="eyebrow">TODAY'S MISSION</span>
-            <h1>Bring your English<br/>back to life.</h1>
-            <p>Save the patient by answering before the timer runs out.</p>
-            <button class="primary-btn" id="startRescueBtn">🚑 Start Rescue</button>
+    <main>
+      <section class="view active" id="homeView">
+        <div class="hero-panel">
+          <div>
+            <span class="kicker">TODAY'S QUEST</span>
+            <h1>Wake your English up.</h1>
+            <p>Choose a mission, answer fast, and turn your rival into a new friend.</p>
           </div>
-          <div class="mascot-wrap">
-            <div class="pulse-ring"></div>
-            <div class="mascot">N</div>
-            <div class="mascot-label">NOI</div>
-          </div>
+          <div class="hero-orbit" aria-hidden="true"><div class="orbital-ring"></div><div class="hero-logo">L</div></div>
         </div>
 
-        <div class="section-head"><h2>Continue learning</h2><span id="cefrChip" class="chip">A2</span></div>
-        <div class="progress-card">
-          <div class="row-between"><strong>Level 4 · Everyday English</strong><span id="levelProgressText">62%</span></div>
-          <div class="progress-track"><div id="levelProgressBar" class="progress-fill" style="width:62%"></div></div>
-          <div class="mini-grid">
-            <button class="mini-card" data-go="learn" data-skill="vocab"><span>🧠</span><b>Vocabulary</b><small>Oxford 3000 aligned</small></button>
-            <button class="mini-card" data-go="learn" data-skill="grammar"><span>🧩</span><b>Grammar</b><small>Quick challenges</small></button>
-            <button class="mini-card" data-go="learn" data-skill="listen"><span>🎧</span><b>Listening</b><small>Hear & choose</small></button>
-            <button class="mini-card" data-go="learn" data-skill="speak"><span>🎙️</span><b>Speaking</b><small>Say it aloud</small></button>
-          </div>
+        <div class="level-strip">
+          <div><small>Current level</small><strong id="homeLevel">A2 Explorer</strong></div>
+          <div class="progress-track"><span id="homeLevelFill" style="width:54%"></span></div>
+          <b id="homeProgressText">54%</b>
         </div>
 
-        <div class="section-head"><h2>Daily quests</h2><span class="muted">2 / 3</span></div>
-        <div class="quest-list">
-          <div class="quest"><div class="quest-icon">⏱️</div><div><b>Study for 10 minutes</b><small>8 / 10 min</small></div><div class="quest-status">80%</div></div>
-          <div class="quest done"><div class="quest-icon">✅</div><div><b>Win one Rescue</b><small>Completed</small></div><div class="quest-status">+30 XP</div></div>
-          <div class="quest"><div class="quest-icon">📖</div><div><b>Read one short story</b><small>0 / 1</small></div><div class="quest-status">+20 XP</div></div>
+        <div class="section-title"><div><span class="kicker">PLAY</span><h2>Choose a mission</h2></div><button class="text-btn" data-view="settings">Settings</button></div>
+        <div class="game-grid">
+          <button class="game-card vocab" data-game="vocab">
+            <div class="game-icon"><span>V</span></div>
+            <div><small>WORD BATTLE</small><h3>Vocabulary</h3><p>Thai ↔ English, shuffled every round.</p></div>
+            <span class="play-dot">▶</span>
+          </button>
+          <button class="game-card grammar" data-game="grammar">
+            <div class="game-icon"><span>G</span></div>
+            <div><small>POWER SENTENCE</small><h3>Grammar</h3><p>Pick the sentence or form that wins.</p></div>
+            <span class="play-dot">▶</span>
+          </button>
+          <button class="game-card crossword" data-game="crossword">
+            <div class="game-icon"><span>C</span></div>
+            <div><small>WORD GRID</small><h3>Crossword</h3><p>Build the grid from your level's words.</p></div>
+            <span class="play-dot">▶</span>
+          </button>
+        </div>
+
+        <div class="section-title"><div><span class="kicker">YOUR RHYTHM</span><h2>Keep the streak alive</h2></div></div>
+        <div class="rhythm-grid">
+          <div class="metric"><span class="metric-logo">L</span><strong id="homeXp">120</strong><small>Total XP</small></div>
+          <div class="metric"><span class="metric-logo">L</span><strong id="homeAccuracy">0%</strong><small>Accuracy</small></div>
+          <div class="metric"><span class="metric-logo">L</span><strong id="homeStreak">1</strong><small>Day streak</small></div>
         </div>
       </section>
 
-      <section id="learnView" class="view">
-        <div class="page-title"><span class="eyebrow">LEARN</span><h1>Choose your skill</h1><p>Short lessons designed for mobile practice.</p></div>
-        <div class="skill-grid">
-          <button class="skill-card" data-skill="vocab"><span class="skill-icon">🧠</span><div><b>Vocabulary Rescue</b><small>Meaning, spelling, matching</small></div><span>→</span></button>
-          <button class="skill-card" data-skill="grammar"><span class="skill-icon">🧩</span><div><b>Grammar Mission</b><small>Fix sentences under pressure</small></div><span>→</span></button>
-          <button class="skill-card" data-skill="listen"><span class="skill-icon">🎧</span><div><b>Listening</b><small>Listen, recognise, respond</small></div><span>→</span></button>
-          <button class="skill-card" data-skill="speak"><span class="skill-icon">🎙️</span><div><b>Speaking</b><small>Pronunciation practice</small></div><span>→</span></button>
-          <button class="skill-card" data-skill="read"><span class="skill-icon">📖</span><div><b>Reading</b><small>Stories + comprehension</small></div><span>→</span></button>
-          <button class="skill-card" data-skill="write"><span class="skill-icon">✍️</span><div><b>Writing</b><small>Build useful sentences</small></div><span>→</span></button>
+      <section class="view anime-focus" id="focusView">
+        <div class="page-head"><span class="kicker">FOCUS EPISODE</span><h1>Watch a little. Learn a little.</h1><p>Every time you enter Focus, LIVNOI rolls a new mini scene and practice lines automatically.</p></div>
+        <div class="focus-shell anime-focus-shell">
+          <div class="focus-topline"><div class="focus-logo">L</div><div><small>FOCUS TIMER</small><div class="focus-time" id="focusTimer">25:00</div></div></div>
+          <div class="focus-options"><button data-mins="15">15</button><button class="active" data-mins="25">25</button><button data-mins="45">45</button><button data-mins="60">60</button></div>
+          <button class="primary" id="focusStart">Start focus</button>
+          <small id="focusStatus">Choose a time and start learning.</small>
         </div>
-        <div id="lessonPanel" class="lesson-panel hidden"></div>
-      </section>
 
-      <section id="focusView" class="view">
-        <div class="page-title"><span class="eyebrow">FOCUS ROOM</span><h1>Read without rushing.</h1><p>Keep the screen awake while your focus session is active.</p></div>
-        <div class="focus-card">
-          <div class="focus-timer" id="focusTimer">25:00</div>
-          <div class="focus-actions">
-            <button class="time-chip active" data-mins="15">15m</button>
-            <button class="time-chip" data-mins="25">25m</button>
-            <button class="time-chip" data-mins="45">45m</button>
-            <button class="time-chip" data-mins="60">60m</button>
-          </div>
-          <button class="primary-btn wide" id="focusStartBtn">Start focus session</button>
-          <small id="wakeStatus" class="muted">Screen wake lock will be requested when supported.</small>
-        </div>
-        <article class="reader-card">
-          <span class="chip">A2 Reading</span>
-          <h2>A Small Change</h2>
-          <p>Every morning, Mia walked past the same little café on her way to work. One Monday, she decided to go inside instead of buying coffee from a machine. The owner smiled, remembered her name, and asked about her day. It was only a small change, but Mia felt more awake and connected to the neighbourhood.</p>
-          <p>By Friday, the café had become part of her routine. She started arriving ten minutes earlier so she could sit by the window and read before work.</p>
-          <div class="reader-question"><b>Quick check:</b> Why did Mia start arriving earlier?</div>
+        <article class="anime-story-card">
+          <div class="watch-card-head"><div><span class="level-badge" id="storyLevel">A1</span><span class="kicker">SHORT STORY</span></div><div class="story-actions"><button class="text-btn" id="nextStory">Next story</button><button class="text-btn alt" id="randomStory">Random</button></div></div>
+          <div class="story-art" aria-hidden="true"><div class="story-moon"></div><div class="story-city"></div><div class="story-hero">L</div></div>
+          <h2 id="shortStoryTitle">Loading a story…</h2>
+          <p class="story-meta" id="shortStoryMeta">Easy English · 1 min read</p>
+          <div class="short-story-text" id="shortStoryText"></div>
+          <div class="story-vocab" id="storyVocab"></div>
+        </article>
+
+        <article class="anime-watch-card">
+          <div class="watch-card-head"><div><span class="level-badge" id="readerLevel">A2</span><span class="kicker">YOUTUBE MINI WATCH</span></div><button class="text-btn" id="shuffleFocus">New scene</button></div>
+          <div class="video-frame"><iframe id="focusVideo" title="LIVNOI focus cartoon" src="" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe></div>
+          <h2 id="focusStoryTitle">Loading a new scene…</h2>
+          <p class="watch-note">Short YouTube learning clip + a few LIVNOI practice lines. We do not copy the full script.</p>
+          <div id="focusLines" class="focus-lines"></div>
         </article>
       </section>
 
-      <section id="progressView" class="view">
-        <div class="page-title"><span class="eyebrow">PROGRESS</span><h1>Your learning pulse</h1><p>See what is improving and what needs another round.</p></div>
-        <div class="stats-grid">
-          <div class="stat-card"><span>⚡</span><strong id="progressXP">120</strong><small>Total XP</small></div>
-          <div class="stat-card"><span>🎯</span><strong id="accuracyValue">78%</strong><small>Accuracy</small></div>
-          <div class="stat-card"><span>📚</span><strong id="wordsValue">18</strong><small>Words practised</small></div>
-          <div class="stat-card"><span>⏳</span><strong id="focusValue">0m</strong><small>Focus time</small></div>
+      <section class="view" id="progressView">
+        <div class="page-head"><span class="kicker">PROGRESS</span><h1>Your learning pulse.</h1><p>Simple numbers that show how you are improving.</p></div>
+        <div class="progress-cards">
+          <div><small>XP</small><strong id="progressXp">120</strong></div>
+          <div><small>Accuracy</small><strong id="progressAccuracy">0%</strong></div>
+          <div><small>Questions</small><strong id="progressQuestions">0</strong></div>
+          <div><small>Best combo</small><strong id="progressCombo">0</strong></div>
         </div>
-        <div class="progress-card">
-          <h3>Skill balance</h3>
-          <div class="skill-line"><span>Vocabulary</span><div class="progress-track"><div class="progress-fill" style="width:72%"></div></div><b>72%</b></div>
-          <div class="skill-line"><span>Grammar</span><div class="progress-track"><div class="progress-fill" style="width:58%"></div></div><b>58%</b></div>
-          <div class="skill-line"><span>Listening</span><div class="progress-track"><div class="progress-fill" style="width:40%"></div></div><b>40%</b></div>
-          <div class="skill-line"><span>Speaking</span><div class="progress-track"><div class="progress-fill" style="width:34%"></div></div><b>34%</b></div>
-        </div>
+        <div class="history-card"><h2>Recent practice</h2><div id="historyList" class="history-list"></div></div>
       </section>
 
-      <section id="profileView" class="view">
-        <div class="profile-card">
-          <div class="avatar">N</div>
-          <h2>Livnoi Learner</h2>
-          <p>A2 Explorer · Level 4</p>
-          <div class="badge-row"><span>🔥 3 day streak</span><span>🏆 First Rescue</span></div>
+      <section class="view" id="settingsView">
+        <div class="page-head"><span class="kicker">SETTINGS</span><h1>Make LIVNOI yours.</h1><p>Your choices are saved on this device.</p></div>
+        <div class="setting-card">
+          <label>Learning level</label>
+          <div class="segmented" id="levelPicker"><button data-level="A1">A1</button><button class="active" data-level="A2">A2</button><button data-level="B1">B1</button><button data-level="B2">B2</button><button data-level="C1">C1</button></div>
+          <small>B levels and above unlock English-only questions.</small>
         </div>
-        <div class="plan-card">
-          <span class="eyebrow">EARLY ACCESS</span>
-          <h2>Premium is free for now.</h2>
-          <p>V1 includes every learning mode while LIVNOI is in early access.</p>
-          <div class="plan-grid">
-            <div><b>Weekly</b><span>Coming later</span></div>
-            <div><b>Monthly</b><span>Coming later</span></div>
-            <div><b>Yearly</b><span>Coming later</span></div>
-          </div>
+        <div class="setting-card">
+          <label>Question language</label>
+          <div class="segmented wide" id="languagePicker"><button class="active" data-language="mixed">TH ↔ EN</button><button data-language="english">English only</button></div>
+          <small id="languageNote">English-only becomes available from B1.</small>
         </div>
-        <button class="secondary-btn wide" id="resetBtn">Reset demo progress</button>
+        <div class="setting-card"><label>Battle speed</label><div class="segmented wide" id="speedPicker"><button data-speed="relaxed">Relaxed</button><button class="active" data-speed="normal">Normal</button><button data-speed="fast">Fast</button></div></div>
+        <div class="setting-card"><label>Audio</label>
+          <div class="settings-toggle"><span>Music</span><button class="switch on" id="musicToggle">ON</button></div>
+          <div class="settings-toggle"><span>Game sounds</span><button class="switch on" id="sfxToggle">ON</button></div>
+          <div class="settings-toggle"><span>Hero power sound</span><button class="switch on" id="powerToggle">ON</button></div>
+        </div>
+        <button class="secondary" id="resetProgress">Reset all scores & progress</button>
       </section>
     </main>
 
     <nav class="bottom-nav">
-      <button class="nav-btn active" data-view="home"><span>🏠</span><small>Home</small></button>
-      <button class="nav-btn" data-view="learn"><span>🎮</span><small>Play</small></button>
-      <button class="nav-btn" data-view="focus"><span>🎯</span><small>Focus</small></button>
-      <button class="nav-btn" data-view="progress"><span>📊</span><small>Progress</small></button>
-      <button class="nav-btn" data-view="profile"><span>👤</span><small>Me</small></button>
+      <button class="nav active" data-view="home"><span class="nav-logo">L</span><small>Home</small></button>
+      <button class="nav" data-game="vocab"><span class="nav-logo">V</span><small>Play</small></button>
+      <button class="nav" data-view="focus"><span class="nav-logo">F</span><small>Focus</small></button>
+      <button class="nav" data-view="progress"><span class="nav-logo">P</span><small>Progress</small></button>
+      <button class="nav" data-view="settings"><span class="nav-logo">S</span><small>Settings</small></button>
     </nav>
   </div>
 
-  <div id="rescueModal" class="modal hidden" aria-hidden="true">
-    <div class="modal-card rescue-modal-card">
-      <div class="rescue-top">
-        <button class="icon-btn" id="closeRescueBtn">✕</button>
-        <div class="patient-health" id="patientHealth">❤️❤️❤️</div>
-        <div class="combo" id="comboValue">×1</div>
-      </div>
-      <div class="rescue-scene">
-        <div class="heartbeat" id="heartbeat">♥</div>
-        <div class="timer-ring"><span id="rescueTimer">12</span></div>
-      </div>
-      <div class="rescue-copy">
-        <span id="rescueLevel" class="chip">A2 Vocabulary</span>
-        <h2 id="questionTitle">What does “improve” mean?</h2>
-        <p id="questionHint">Choose the best meaning.</p>
-      </div>
-      <div id="answerGrid" class="answer-grid"></div>
-      <div id="feedbackBox" class="feedback-box hidden"></div>
-      <button id="nextQuestionBtn" class="primary-btn wide hidden">Next mission</button>
+  <section id="battleScreen" class="battle-screen hidden" aria-hidden="true">
+    <div class="battle-hud">
+      <div class="battle-tools"><button class="hud-btn" id="exitBattle">×</button><button class="hud-btn small" id="pauseBattle">II</button><button class="hud-btn small" id="quickSound">SND</button></div>
+      <div class="battle-title"><small id="battleMode">VOCABULARY</small><b id="battleLevel">A2 · ROUND 1</b></div>
+      <div class="score-chip"><span class="mini-logo">L</span><b id="battleScore">0</b></div>
     </div>
-  </div>
 
+    <div class="arena" id="arena">
+      <div class="sky-dot d1"></div><div class="sky-dot d2"></div><div class="sky-dot d3"></div>
+      <div class="hero-character" id="heroCharacter"><div class="hero-head"></div><div class="hero-body"><span>L</span></div><div class="hero-shadow"></div></div>
+      <div class="energy-shot" id="energyShot"></div>
+      <div class="villain" id="villain"><div class="villain-ears"></div><div class="villain-face"><i></i><i></i></div><div class="villain-body"></div><div class="villain-shadow"></div></div>
+      <div class="friend-bubble hidden" id="friendBubble">FRIEND!</div>
+    </div>
+
+    <div class="hp-zone">
+      <div class="hp-label"><span>YOUR ENERGY</span><b id="heroHpText">100</b></div>
+      <div class="hp-track"><span id="heroHpFill" style="width:100%"></span></div>
+      <div class="enemy-hp"><span>RIVAL ENERGY</span><div class="hp-track rival"><span id="villainHpFill" style="width:100%"></span></div><b id="villainHpText">100</b></div>
+    </div>
+
+    <div class="timer-bar"><span id="timerFill"></span><b id="timerText">12.0</b></div>
+
+    <div class="question-zone">
+      <div class="question-meta"><span id="questionDirection">EN → TH</span><span id="comboText">COMBO ×1</span><button class="text-btn hint-chip" id="useHint">HINT 3</button></div>
+      <h1 id="battleQuestion">Ready?</h1>
+      <p id="battleHint">Choose the best answer.</p>
+      <div class="answers" id="answers"></div>
+      <div id="battleFeedback" class="battle-feedback hidden"></div>
+    </div>
+  </section>
+
+  <section id="crosswordScreen" class="battle-screen crossword-screen hidden" aria-hidden="true">
+    <div class="battle-hud"><button class="hud-btn" id="exitCrossword">×</button><div class="battle-title"><small>CROSSWORD</small><b id="crosswordLevel">A2 WORD GRID</b></div><div class="score-chip"><span class="mini-logo">L</span><b id="crosswordScore">0</b></div></div>
+    <div class="crossword-content"><div id="crosswordGrid" class="crossword-grid"></div><div class="crossword-clues"><h2>Clues</h2><div id="crosswordClueList"></div><button class="primary" id="newCrossword">New grid</button></div></div>
+  </section>
+
+  <div id="pauseOverlay" class="pause-overlay hidden"><div class="pause-card"><span class="kicker">MISSION PAUSED</span><h2>Take control</h2><div class="pause-grid"><button class="primary" id="resumeBattle">Resume</button><button id="pauseSound">Sound ON</button><button id="restartBattle">Restart</button><button id="pauseHint">Use hint (3)</button><button id="leaveBattle">Exit mission</button></div></div></div>
+  <div id="resultOverlay" class="result-overlay hidden"><div class="result-card"><span class="kicker" id="resultLabel">MISSION OVER</span><h2 id="resultTitle">Nice run!</h2><div class="result-score" id="resultScore">0</div><div class="result-best" id="resultBest">BEST 0</div><button class="primary" id="resultAgain">Play again</button><button id="resultHome">Back home</button></div></div>
   <div id="toast" class="toast hidden"></div>
   <script src="app.js"></script>
 </body>
