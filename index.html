@@ -27,7 +27,11 @@
             <h1>Wake your English up.</h1>
             <p>Choose a mission, answer fast, and turn your rival into a new friend.</p>
           </div>
-          <div class="hero-orbit" aria-hidden="true"><div class="orbital-ring"></div><div class="hero-logo">L</div></div>
+          <div class="home-duel" aria-hidden="true">
+      <div class="mini-hero"><span class="mh-head"></span><span class="mh-body">L</span></div>
+      <div class="duel-spark"></div>
+      <div class="mini-beast"><span class="mb-ear a"></span><span class="mb-ear b"></span><span class="mb-face"><i></i><i></i></span><span class="mb-body"></span></div>
+    </div>
         </div>
 
         <div class="level-strip">
@@ -39,19 +43,19 @@
         <div class="section-title"><div><span class="kicker">PLAY</span><h2>Choose a mission</h2></div><button class="text-btn" data-view="settings">Settings</button></div>
         <div class="game-grid">
           <button class="game-card vocab" data-game="vocab">
-            <div class="game-icon"><span>V</span></div>
+            <div class="game-icon anime-icon vocab-hero" aria-hidden="true"><span class="anime-head"><i class="hair"></i><i class="face"></i><i class="eye e1"></i><i class="eye e2"></i><i class="mouth"></i></span><span class="spark s1"></span><span class="spark s2"></span></div>
             <div><small>WORD BATTLE</small><h3>Vocabulary</h3><p>Thai ↔ English, shuffled every round.</p></div>
-            <span class="play-dot">▶</span>
+            <span class="play-dot energy-play" aria-hidden="true"><i></i></span>
           </button>
           <button class="game-card grammar" data-game="grammar">
-            <div class="game-icon"><span>G</span></div>
+            <div class="game-icon anime-icon grammar-mage" aria-hidden="true"><span class="anime-head"><i class="hair"></i><i class="face"></i><i class="eye e1"></i><i class="eye e2"></i><i class="mouth"></i></span><span class="spell-orb"></span></div>
             <div><small>POWER SENTENCE</small><h3>Grammar</h3><p>Pick the sentence or form that wins.</p></div>
-            <span class="play-dot">▶</span>
+            <span class="play-dot energy-play" aria-hidden="true"><i></i></span>
           </button>
           <button class="game-card crossword" data-game="crossword">
-            <div class="game-icon"><span>C</span></div>
+            <div class="game-icon anime-icon crossword-scout" aria-hidden="true"><span class="anime-head"><i class="hair"></i><i class="face"></i><i class="eye e1"></i><i class="eye e2"></i><i class="mouth"></i></span><span class="tile t1">A</span><span class="tile t2">B</span></div>
             <div><small>WORD GRID</small><h3>Crossword</h3><p>Build the grid from your level's words.</p></div>
-            <span class="play-dot">▶</span>
+            <span class="play-dot energy-play" aria-hidden="true"><i></i></span>
           </button>
         </div>
 
@@ -64,41 +68,71 @@
       </section>
 
       <section class="view anime-focus" id="focusView">
-        <div class="page-head"><span class="kicker">FOCUS EPISODE</span><h1>Watch a little. Learn a little.</h1><p>Every time you enter Focus, LIVNOI rolls a new mini scene and practice lines automatically.</p></div>
-        <div class="focus-shell anime-focus-shell">
-          <div class="focus-topline"><div class="focus-logo">L</div><div><small>FOCUS TIMER</small><div class="focus-time" id="focusTimer">25:00</div></div></div>
-          <div class="focus-options"><button data-mins="15">15</button><button class="active" data-mins="25">25</button><button data-mins="45">45</button><button data-mins="60">60</button></div>
-          <button class="primary" id="focusStart">Start focus</button>
-          <small id="focusStatus">Choose a time and start learning.</small>
+        <div class="page-head"><span class="kicker">LIVNOI AIR · FOCUS</span><h1>Your study flight.</h1><p>Choose a destination, get a boarding pass, pick your seat, then study inside your own in-flight screen.</p></div>
+
+        <div class="flight-board" id="flightBoard">
+          <div class="flight-board-top"><span class="kicker">LIVNOI AIR · DEPARTURES</span><b id="flightNumber">LN 218</b></div>
+          <div class="flight-route"><div><small>FROM</small><strong id="flightFromCode">MEL</strong><span id="flightFromCity">Melbourne</span></div><div class="route-line"><span></span><b>✦</b><span></span></div><div><small>TO</small><strong id="flightCode">NRT</strong><span id="flightCity">Tokyo</span></div></div>
+          <div class="flight-facts flight-facts-live"><span><small>DISTANCE</small><b id="routeDistance">8,190 km</b></span><span><small>FLIGHT TIME</small><b id="routeHours">10h 15m</b></span><span class="live-time-card"><small><i class="live-dot"></i> <span id="fromLocalLabel">MEL LOCAL NOW</span></small><b id="fromLocalNow">--:--:--</b></span><span class="live-time-card"><small><i class="live-dot"></i> <span id="toLocalLabel">NRT LOCAL NOW</span></small><b id="toLocalNow">--:--:--</b></span><span><small>LOCAL ETA</small><b id="routeEta">--:--</b></span></div>
+          <div class="flight-actions"><button class="secondary" id="randomFlight">Random destination</button><button class="primary" id="buyTicket">Buy focus ticket</button></div>
+          <small id="ticketStatus">Choose a destination and buy your virtual focus ticket.</small>
         </div>
 
-        <article class="anime-story-card">
-          <div class="watch-card-head"><div><span class="level-badge" id="storyLevel">A1</span><span class="kicker">SHORT STORY</span></div><div class="story-actions"><button class="text-btn" id="nextStory">Next story</button><button class="text-btn alt" id="randomStory">Random</button></div></div>
-          <div class="story-art" aria-hidden="true"><div class="story-moon"></div><div class="story-city"></div><div class="story-hero">L</div></div>
-          <h2 id="shortStoryTitle">Loading a story…</h2>
-          <p class="story-meta" id="shortStoryMeta">Easy English · 1 min read</p>
-          <div class="short-story-text" id="shortStoryText"></div>
-          <div class="story-vocab" id="storyVocab"></div>
-        </article>
+        <section class="seat-select hidden" id="seatSelect">
+          <div class="section-title"><div><span class="kicker">BOARDING</span><h2>Choose your seat</h2></div><span class="seat-current" id="seatCurrent">No seat yet</span></div>
+          <div class="plane-cabin">
+            <div class="cockpit">LIVNOI AIR</div>
+            <div class="seat-map" id="seatMap"></div>
+          </div>
+          <button class="primary" id="enterSeat" disabled>Enter my seat</button>
+        </section>
 
-        <article class="anime-watch-card">
-          <div class="watch-card-head"><div><span class="level-badge" id="readerLevel">A2</span><span class="kicker">YOUTUBE MINI WATCH</span></div><button class="text-btn" id="shuffleFocus">New scene</button></div>
-          <div class="video-frame"><iframe id="focusVideo" title="LIVNOI focus cartoon" src="" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe></div>
-          <h2 id="focusStoryTitle">Loading a new scene…</h2>
-          <p class="watch-note">Short YouTube learning clip + a few LIVNOI practice lines. We do not copy the full script.</p>
-          <div id="focusLines" class="focus-lines"></div>
-        </article>
+        <section class="ife-screen hidden" id="ifeScreen">
+          <div class="ife-bezel">
+            <div class="ife-topbar"><div><span class="ife-dot"></span><b>LIVNOI AIR</b></div><span id="ifeSeat">SEAT --</span></div>
+            <div class="flight-map">
+              <div class="globe" aria-hidden="true"><span class="continent one"></span><span class="continent two"></span><span class="continent three"></span><span class="plane-on-globe" id="planeOnGlobe">✦</span></div>
+              <div class="route-overlay">
+                <small>NOW FLYING</small>
+                <h2><span id="mapFromCode">MEL</span><i>→</i><span id="mapDestCode">NRT</span></h2>
+                <div class="route-progress"><span id="routeProgressFill"></span></div>
+                <div class="route-stats"><span><small>TIME HERE</small><b id="localTimeNow">--:--</b></span><span><small>REMAINING</small><b id="distanceRemaining">8,190 km</b></span><span><small>DESTINATION</small><b id="destLocalTime">--:--</b></span></div>
+              </div>
+            </div>
+            <div class="nearby-card"><small>COUNTRIES NEAR YOUR ROUTE</small><div id="nearbyCountries" class="nearby-chips"></div></div>
+            <div class="focus-shell airplane-cabin">
+              <div class="focus-topline"><div class="focus-logo">L</div><div><small>FULL FLIGHT FOCUS</small><div class="focus-time" id="focusTimer">10:15:00</div></div></div>
+              <div class="flight-duration-note"><span>Focus time follows the real route duration in LIVNOI.</span><b id="focusRouteLabel">No custom timer</b></div>
+              <button class="primary" id="focusStart">Start full flight</button>
+              <small id="focusStatus">Choose a seat to unlock your in-flight study screen.</small>
+            </div>
+
+            <article class="anime-story-card">
+              <div class="watch-card-head"><div><span class="level-badge" id="storyLevel">A1</span><span class="kicker">IN-FLIGHT SHORT STORY</span></div><div class="story-actions"><button class="text-btn" id="nextStory">Next story</button><button class="text-btn alt" id="randomStory">Random</button></div></div>
+              <div class="story-art flight-window" aria-hidden="true"><div class="cloud c1"></div><div class="cloud c2"></div><div class="plane-mark">L</div></div>
+              <h2 id="shortStoryTitle">Loading a story…</h2>
+              <p class="story-meta" id="shortStoryMeta">Easy English · 1 min read</p>
+              <div class="short-story-text" id="shortStoryText"></div>
+              <div class="story-vocab" id="storyVocab"></div>
+            </article>
+          </div>
+        </section>
       </section>
 
       <section class="view" id="progressView">
-        <div class="page-head"><span class="kicker">PROGRESS</span><h1>Your learning pulse.</h1><p>Simple numbers that show how you are improving.</p></div>
+        <div class="page-head"><span class="kicker">PROGRESS</span><h1>Your learning & focus log.</h1><p>Game scores and every study flight are saved on this device.</p></div>
         <div class="progress-cards">
           <div><small>XP</small><strong id="progressXp">120</strong></div>
           <div><small>Accuracy</small><strong id="progressAccuracy">0%</strong></div>
-          <div><small>Questions</small><strong id="progressQuestions">0</strong></div>
-          <div><small>Best combo</small><strong id="progressCombo">0</strong></div>
+          <div><small>Focus time</small><strong id="progressFocusTime">0m</strong></div>
+          <div><small>Flights completed</small><strong id="progressFlights">0</strong></div>
         </div>
-        <div class="history-card"><h2>Recent practice</h2><div id="historyList" class="history-list"></div></div>
+        <div class="calendar-card">
+          <div class="calendar-head"><div><span class="kicker">FOCUS CALENDAR</span><h2 id="calendarTitle">This month</h2></div><div class="calendar-legend"><span class="done-dot"></span> done <span class="pause-dot"></span> paused</div></div>
+          <div class="focus-calendar" id="focusCalendar"></div>
+          <div class="day-detail" id="dayDetail">Tap a marked day to see your flights.</div>
+        </div>
+        <div class="history-card"><h2>Recent activity</h2><div id="historyList" class="history-list"></div></div>
       </section>
 
       <section class="view" id="settingsView">
@@ -113,7 +147,7 @@
           <div class="segmented wide" id="languagePicker"><button class="active" data-language="mixed">TH ↔ EN</button><button data-language="english">English only</button></div>
           <small id="languageNote">English-only becomes available from B1.</small>
         </div>
-        <div class="setting-card"><label>Battle speed</label><div class="segmented wide" id="speedPicker"><button data-speed="relaxed">Relaxed</button><button class="active" data-speed="normal">Normal</button><button data-speed="fast">Fast</button></div></div>
+        <div class="setting-card fixed-timer-card"><label>Battle timer</label><div class="timer-mode-grid"><span><strong>7</strong><small>sec · Vocabulary</small></span><span><strong>10</strong><small>sec · Grammar</small></span></div><small>The beast advances and fires warning energy while you think. Crossword has no timer.</small></div>
         <div class="setting-card"><label>Audio</label>
           <div class="settings-toggle"><span>Music</span><button class="switch on" id="musicToggle">ON</button></div>
           <div class="settings-toggle"><span>Game sounds</span><button class="switch on" id="sfxToggle">ON</button></div>
@@ -132,31 +166,35 @@
     </nav>
   </div>
 
+
+  <div id="gameLoadingOverlay" class="game-loading" aria-hidden="false">
+    <div class="load-stage" aria-hidden="true">
+      <div class="load-hero"><div class="lh-head"></div><div class="lh-body"></div></div>
+      <div class="load-beast"><div class="lb-ear e1"></div><div class="lb-ear e2"></div><div class="lb-face"><i></i><i></i></div><div class="lb-body"></div></div>
+    </div>
+    <div class="load-track"><span id="gameLoadFill"></span><div class="runner-beast" id="runnerBeast"><div class="rb-ear a"></div><div class="rb-ear b"></div><div class="rb-face"></div></div></div>
+    <div class="load-percent" id="gameLoadPercent">0%</div>
+  </div>
+
   <section id="battleScreen" class="battle-screen hidden" aria-hidden="true">
     <div class="battle-hud">
       <div class="battle-tools"><button class="hud-btn" id="exitBattle">×</button><button class="hud-btn small" id="pauseBattle">II</button><button class="hud-btn small" id="quickSound">SND</button></div>
-      <div class="battle-title"><small id="battleMode">VOCABULARY</small><b id="battleLevel">A2 · ROUND 1</b></div>
+      <div class="battle-title"><small id="battleMode">VOCABULARY</small><b id="battleLevel">A2 · ENDLESS RUN</b></div>
       <div class="score-chip"><span class="mini-logo">L</span><b id="battleScore">0</b></div>
     </div>
 
     <div class="arena" id="arena">
       <div class="sky-dot d1"></div><div class="sky-dot d2"></div><div class="sky-dot d3"></div>
-      <div class="hero-character" id="heroCharacter"><div class="hero-head"></div><div class="hero-body"><span>L</span></div><div class="hero-shadow"></div></div>
+      <div class="hero-character" id="heroCharacter"><div class="hero-ghost" id="heroGhost"><span></span></div><div class="hero-head"></div><div class="hero-body"><span>L</span></div><div class="hero-shadow"></div></div>
       <div class="energy-shot" id="energyShot"></div>
       <div class="villain" id="villain"><div class="villain-ears"></div><div class="villain-face"><i></i><i></i></div><div class="villain-body"></div><div class="villain-shadow"></div></div>
       <div class="friend-bubble hidden" id="friendBubble">FRIEND!</div>
     </div>
 
-    <div class="hp-zone">
-      <div class="hp-label"><span>YOUR ENERGY</span><b id="heroHpText">100</b></div>
-      <div class="hp-track"><span id="heroHpFill" style="width:100%"></span></div>
-      <div class="enemy-hp"><span>RIVAL ENERGY</span><div class="hp-track rival"><span id="villainHpFill" style="width:100%"></span></div><b id="villainHpText">100</b></div>
-    </div>
-
-    <div class="timer-bar"><span id="timerFill"></span><b id="timerText">12.0</b></div>
+    <div class="timer-bar"><span id="timerFill"></span><b id="timerText">7.0</b></div>
 
     <div class="question-zone">
-      <div class="question-meta"><span id="questionDirection">EN → TH</span><span id="comboText">COMBO ×1</span><button class="text-btn hint-chip" id="useHint">HINT 3</button></div>
+      <div class="question-meta"><span id="questionDirection">EN → TH</span><span id="comboText">COMBO ×1</span><button class="text-btn hint-chip" id="useHint"><span class="hint-star"></span><span id="hintCount">3</span></button></div>
       <h1 id="battleQuestion">Ready?</h1>
       <p id="battleHint">Choose the best answer.</p>
       <div class="answers" id="answers"></div>
@@ -170,8 +208,22 @@
   </section>
 
   <div id="pauseOverlay" class="pause-overlay hidden"><div class="pause-card"><span class="kicker">MISSION PAUSED</span><h2>Take control</h2><div class="pause-grid"><button class="primary" id="resumeBattle">Resume</button><button id="pauseSound">Sound ON</button><button id="restartBattle">Restart</button><button id="pauseHint">Use hint (3)</button><button id="leaveBattle">Exit mission</button></div></div></div>
-  <div id="resultOverlay" class="result-overlay hidden"><div class="result-card"><span class="kicker" id="resultLabel">MISSION OVER</span><h2 id="resultTitle">Nice run!</h2><div class="result-score" id="resultScore">0</div><div class="result-best" id="resultBest">BEST 0</div><button class="primary" id="resultAgain">Play again</button><button id="resultHome">Back home</button></div></div>
+  <div id="resultOverlay" class="result-overlay hidden">
+    <div class="result-card">
+      <span class="kicker" id="resultLabel">MISSION OVER</span>
+      <h2 id="resultTitle">Nice run!</h2>
+      <div class="result-score-block"><small>YOUR SCORE</small><div class="result-score" id="resultScore">0</div></div>
+      <div class="result-best" id="resultBest">BEST 0</div>
+      <div class="result-record hidden" id="resultRecord">NEW BEST!</div>
+      <p class="result-motivation" id="resultMotivation">Beat your best score on the next run.</p>
+      <button class="primary result-retry" id="resultAgain">Play again & beat my best</button>
+      <button id="resultHome">Back home</button>
+    </div>
+  </div>
   <div id="toast" class="toast hidden"></div>
+  <script src="wordbank.js"></script>
+  <script src="synonyms.js"></script>
+  <script src="grammar_bank.js"></script>
   <script src="app.js"></script>
 </body>
 </html>
