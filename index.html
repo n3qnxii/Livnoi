@@ -1,0 +1,167 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#111827" />
+  <title>LIVNOI — Learn. Play. Come Alive.</title>
+  <link rel="manifest" href="manifest.webmanifest" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div id="app" class="app-shell">
+    <header class="topbar">
+      <div>
+        <div class="brand">LIVNOI</div>
+        <div class="tagline">Learn. Play. Come Alive.</div>
+      </div>
+      <div class="top-stats">
+        <span class="pill">🔥 <b id="streakValue">3</b></span>
+        <span class="pill">⚡ <b id="xpValue">120</b></span>
+      </div>
+    </header>
+
+    <main id="mainContent" class="main-content">
+      <section id="homeView" class="view active">
+        <div class="hero-card">
+          <div class="hero-copy">
+            <span class="eyebrow">TODAY'S MISSION</span>
+            <h1>Bring your English<br/>back to life.</h1>
+            <p>Save the patient by answering before the timer runs out.</p>
+            <button class="primary-btn" id="startRescueBtn">🚑 Start Rescue</button>
+          </div>
+          <div class="mascot-wrap">
+            <div class="pulse-ring"></div>
+            <div class="mascot">N</div>
+            <div class="mascot-label">NOI</div>
+          </div>
+        </div>
+
+        <div class="section-head"><h2>Continue learning</h2><span id="cefrChip" class="chip">A2</span></div>
+        <div class="progress-card">
+          <div class="row-between"><strong>Level 4 · Everyday English</strong><span id="levelProgressText">62%</span></div>
+          <div class="progress-track"><div id="levelProgressBar" class="progress-fill" style="width:62%"></div></div>
+          <div class="mini-grid">
+            <button class="mini-card" data-go="learn" data-skill="vocab"><span>🧠</span><b>Vocabulary</b><small>Oxford 3000 aligned</small></button>
+            <button class="mini-card" data-go="learn" data-skill="grammar"><span>🧩</span><b>Grammar</b><small>Quick challenges</small></button>
+            <button class="mini-card" data-go="learn" data-skill="listen"><span>🎧</span><b>Listening</b><small>Hear & choose</small></button>
+            <button class="mini-card" data-go="learn" data-skill="speak"><span>🎙️</span><b>Speaking</b><small>Say it aloud</small></button>
+          </div>
+        </div>
+
+        <div class="section-head"><h2>Daily quests</h2><span class="muted">2 / 3</span></div>
+        <div class="quest-list">
+          <div class="quest"><div class="quest-icon">⏱️</div><div><b>Study for 10 minutes</b><small>8 / 10 min</small></div><div class="quest-status">80%</div></div>
+          <div class="quest done"><div class="quest-icon">✅</div><div><b>Win one Rescue</b><small>Completed</small></div><div class="quest-status">+30 XP</div></div>
+          <div class="quest"><div class="quest-icon">📖</div><div><b>Read one short story</b><small>0 / 1</small></div><div class="quest-status">+20 XP</div></div>
+        </div>
+      </section>
+
+      <section id="learnView" class="view">
+        <div class="page-title"><span class="eyebrow">LEARN</span><h1>Choose your skill</h1><p>Short lessons designed for mobile practice.</p></div>
+        <div class="skill-grid">
+          <button class="skill-card" data-skill="vocab"><span class="skill-icon">🧠</span><div><b>Vocabulary Rescue</b><small>Meaning, spelling, matching</small></div><span>→</span></button>
+          <button class="skill-card" data-skill="grammar"><span class="skill-icon">🧩</span><div><b>Grammar Mission</b><small>Fix sentences under pressure</small></div><span>→</span></button>
+          <button class="skill-card" data-skill="listen"><span class="skill-icon">🎧</span><div><b>Listening</b><small>Listen, recognise, respond</small></div><span>→</span></button>
+          <button class="skill-card" data-skill="speak"><span class="skill-icon">🎙️</span><div><b>Speaking</b><small>Pronunciation practice</small></div><span>→</span></button>
+          <button class="skill-card" data-skill="read"><span class="skill-icon">📖</span><div><b>Reading</b><small>Stories + comprehension</small></div><span>→</span></button>
+          <button class="skill-card" data-skill="write"><span class="skill-icon">✍️</span><div><b>Writing</b><small>Build useful sentences</small></div><span>→</span></button>
+        </div>
+        <div id="lessonPanel" class="lesson-panel hidden"></div>
+      </section>
+
+      <section id="focusView" class="view">
+        <div class="page-title"><span class="eyebrow">FOCUS ROOM</span><h1>Read without rushing.</h1><p>Keep the screen awake while your focus session is active.</p></div>
+        <div class="focus-card">
+          <div class="focus-timer" id="focusTimer">25:00</div>
+          <div class="focus-actions">
+            <button class="time-chip active" data-mins="15">15m</button>
+            <button class="time-chip" data-mins="25">25m</button>
+            <button class="time-chip" data-mins="45">45m</button>
+            <button class="time-chip" data-mins="60">60m</button>
+          </div>
+          <button class="primary-btn wide" id="focusStartBtn">Start focus session</button>
+          <small id="wakeStatus" class="muted">Screen wake lock will be requested when supported.</small>
+        </div>
+        <article class="reader-card">
+          <span class="chip">A2 Reading</span>
+          <h2>A Small Change</h2>
+          <p>Every morning, Mia walked past the same little café on her way to work. One Monday, she decided to go inside instead of buying coffee from a machine. The owner smiled, remembered her name, and asked about her day. It was only a small change, but Mia felt more awake and connected to the neighbourhood.</p>
+          <p>By Friday, the café had become part of her routine. She started arriving ten minutes earlier so she could sit by the window and read before work.</p>
+          <div class="reader-question"><b>Quick check:</b> Why did Mia start arriving earlier?</div>
+        </article>
+      </section>
+
+      <section id="progressView" class="view">
+        <div class="page-title"><span class="eyebrow">PROGRESS</span><h1>Your learning pulse</h1><p>See what is improving and what needs another round.</p></div>
+        <div class="stats-grid">
+          <div class="stat-card"><span>⚡</span><strong id="progressXP">120</strong><small>Total XP</small></div>
+          <div class="stat-card"><span>🎯</span><strong id="accuracyValue">78%</strong><small>Accuracy</small></div>
+          <div class="stat-card"><span>📚</span><strong id="wordsValue">18</strong><small>Words practised</small></div>
+          <div class="stat-card"><span>⏳</span><strong id="focusValue">0m</strong><small>Focus time</small></div>
+        </div>
+        <div class="progress-card">
+          <h3>Skill balance</h3>
+          <div class="skill-line"><span>Vocabulary</span><div class="progress-track"><div class="progress-fill" style="width:72%"></div></div><b>72%</b></div>
+          <div class="skill-line"><span>Grammar</span><div class="progress-track"><div class="progress-fill" style="width:58%"></div></div><b>58%</b></div>
+          <div class="skill-line"><span>Listening</span><div class="progress-track"><div class="progress-fill" style="width:40%"></div></div><b>40%</b></div>
+          <div class="skill-line"><span>Speaking</span><div class="progress-track"><div class="progress-fill" style="width:34%"></div></div><b>34%</b></div>
+        </div>
+      </section>
+
+      <section id="profileView" class="view">
+        <div class="profile-card">
+          <div class="avatar">N</div>
+          <h2>Livnoi Learner</h2>
+          <p>A2 Explorer · Level 4</p>
+          <div class="badge-row"><span>🔥 3 day streak</span><span>🏆 First Rescue</span></div>
+        </div>
+        <div class="plan-card">
+          <span class="eyebrow">EARLY ACCESS</span>
+          <h2>Premium is free for now.</h2>
+          <p>V1 includes every learning mode while LIVNOI is in early access.</p>
+          <div class="plan-grid">
+            <div><b>Weekly</b><span>Coming later</span></div>
+            <div><b>Monthly</b><span>Coming later</span></div>
+            <div><b>Yearly</b><span>Coming later</span></div>
+          </div>
+        </div>
+        <button class="secondary-btn wide" id="resetBtn">Reset demo progress</button>
+      </section>
+    </main>
+
+    <nav class="bottom-nav">
+      <button class="nav-btn active" data-view="home"><span>🏠</span><small>Home</small></button>
+      <button class="nav-btn" data-view="learn"><span>🎮</span><small>Play</small></button>
+      <button class="nav-btn" data-view="focus"><span>🎯</span><small>Focus</small></button>
+      <button class="nav-btn" data-view="progress"><span>📊</span><small>Progress</small></button>
+      <button class="nav-btn" data-view="profile"><span>👤</span><small>Me</small></button>
+    </nav>
+  </div>
+
+  <div id="rescueModal" class="modal hidden" aria-hidden="true">
+    <div class="modal-card rescue-modal-card">
+      <div class="rescue-top">
+        <button class="icon-btn" id="closeRescueBtn">✕</button>
+        <div class="patient-health" id="patientHealth">❤️❤️❤️</div>
+        <div class="combo" id="comboValue">×1</div>
+      </div>
+      <div class="rescue-scene">
+        <div class="heartbeat" id="heartbeat">♥</div>
+        <div class="timer-ring"><span id="rescueTimer">12</span></div>
+      </div>
+      <div class="rescue-copy">
+        <span id="rescueLevel" class="chip">A2 Vocabulary</span>
+        <h2 id="questionTitle">What does “improve” mean?</h2>
+        <p id="questionHint">Choose the best meaning.</p>
+      </div>
+      <div id="answerGrid" class="answer-grid"></div>
+      <div id="feedbackBox" class="feedback-box hidden"></div>
+      <button id="nextQuestionBtn" class="primary-btn wide hidden">Next mission</button>
+    </div>
+  </div>
+
+  <div id="toast" class="toast hidden"></div>
+  <script src="app.js"></script>
+</body>
+</html>
