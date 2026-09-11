@@ -194,11 +194,13 @@ function submitAnswer(opt,button,answer){
     button.classList.add('wrong');
     battle.combo=1;
     const villain=$('#villain');
-    if(villain){villain.classList.add('charge');villain.style.setProperty('--approach','.72');}
+    if(villain){villain.classList.add('charge');villain.style.setProperty('--approach','.9');}
     attackAnimation(false);
-    showFeedback(false,battle.current.hint||`Correct: ${answer}`);
+    showFeedback(false,`Wrong — correct answer: ${answer}`);
     updateBattleUI();
-    setTimeout(nextQuestion,760);
+    // One mistake ends the run: the beast's shot defeats the hero immediately.
+    setTimeout(heroDeathAnimation,180);
+    setTimeout(finishRound,1250);
   }
   updateBattleUI();
 }
